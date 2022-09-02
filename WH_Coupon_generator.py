@@ -92,7 +92,7 @@ def main():
     time.sleep(2)
     #recupero mail 
     #copia indirizzo mail
-    email = browser.find_element(By.ID, "DontUseWEBuseAPI").text()
+    email = browser.find_element(By.XPATH, "//*[@id=\"DontUseWEBuseAPI\"]").text()
     
    
 
