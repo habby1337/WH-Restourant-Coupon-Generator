@@ -3,10 +3,37 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
 import sys
 import time
-from termcolor import colored
 
 
+#inizializzazione browser
+print("[INFO] Inizializzaizone browser...")
+browser = webdriver.Firefox()
 
+
+def openBrowser(url: string):
+    """Apertura browser su paramentro url
+
+    Args:
+        url (string): Url del sitoweb da visitare
+
+    Returns:
+        object: Ritorno dell' oggetto browser 
+    """
+    
+    print("[INFO] Apertura browser")
+    browser.get(url)
+    time.sleep(2)
+
+    
+
+
+#apertura browser su sito web mail 
+openBrowser("https://tempail.com/it/")
+
+#recupero mail 
+
+
+#copia indirizzo mail
 
 
 
@@ -18,12 +45,12 @@ from termcolor import colored
 
 email = input("[INPUT] Inserisci l'indirizzo email: ")
 
+
+
 print("[INFO] Apertura browser")
-browser = webdriver.Firefox()
 
+openBrowser("https://wienerhaus.it/newsletter")
 
-browser.get("https://wienerhaus.it/newsletter")
-time.sleep(2)
 
 print("[INFO] Inserimento valori nei rispettivi campi")
 
