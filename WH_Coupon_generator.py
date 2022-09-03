@@ -1,6 +1,7 @@
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
+from selenium.webdriver.firefox.options import Options
 import sys
 import time
 import random
@@ -72,10 +73,14 @@ def selectBrowser(browser_type = 0):
    
 
     if browser_type == "1":
-        browser = webdriver.Firefox()
+        op = Options()
+        op.add_argument("--headless")
+        browser = webdriver.Firefox(options=op)
         return browser
     elif browser_type == "2":
-        browser = webdriver.Chrome()
+        op = webdriver.ChromeOptions()
+        op.add_argument('headless')
+        browser = webdriver.Chrome(options=op)
         return browser
     else:
         if browser_type != 0:
