@@ -8,6 +8,7 @@ import string
 import requests
 import json
 import re
+import os, errno
 
 
 
@@ -231,20 +232,13 @@ def main():
     #recupera la mail ricevuta
     message_id = checkRecivedEmail()
     
-    
-    #DEBUG
-    print(message_id, type(message_id))
-    print(str(message_id), type(str(message_id)))
-    
-    
+       
 
     
     r = requests.get("https://api.mail.tm/messages/"+message_id, headers={"Authorization": "Bearer "+auth_token})
     json_response = r.json()
     
-    print(json_response, type(json_response))
-    
-    
+  
     
     
     #Ricarca il link del coupon       
@@ -269,6 +263,13 @@ def main():
     time.sleep(2)
     
     print("[######] FASE 4 - FINE [######]"+"\n")
+    
+    try: 
+        os.remove("geckodriver.log")
+        os.remove("coupon.png")
+        print("[INFO] Rimozione file temporanei e coupon vecchi")
+    except OSError:
+        pass
     
     print("[INFO] Salvataggio immagine coupon> coupon.png")
     browser.save_full_page_screenshot("coupon.png")
