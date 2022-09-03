@@ -3,6 +3,10 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
 import sys
 import time
+import random
+import string
+import requests
+import json
 
 
 
@@ -18,7 +22,7 @@ def openBrowser(url, browser):
         object: Ritorno dell' oggetto browser 
     """
     
-    print("[INFO] Apertura browser su url\"",url,"\"...")
+    print("[INFO] Apertura browser su url \""+url+"\"..."+"\n")
     browser.get(url)
     time.sleep(2)
     
@@ -79,23 +83,52 @@ def selectBrowser(browser_type = 0):
 
 
 def main():
-    browser = checkParamCL()
+    
+    # headers = {'Content-Type: application/json'}
+    #browser = checkParamCL()
+    global auth_token
+    
+    #Genera una stringa casuale di 15 caratteri per l'email e password
+    address = ''.join(random.choices(string.ascii_lowercase + string.digits, k=15))+"@emergentvillage.org"
+    password = ''.join(random.choices(string.ascii_lowercase + string.ascii_uppercase + string.digits, k=10))
     
     
-    #apertura browser su sito web mail 
-    openBrowser("https://mail.tm/it/", browser)
+    print("[INFO] Generazione email: "+address+"\n")
+    print("[INFO] Generazione password: "+password+"\n")
     
-    
-    #Chiusura dialgo coockies
-    browser.find_element(By.XPATH, "/html/body/div[1]/div/div/div/div[2]/div/button[3]").click()
 
-    time.sleep(2)
-    #recupero mail 
-    #copia indirizzo mail
-    email = browser.find_element(By.XPATH, "//*[@id=\"DontUseWEBuseAPI\"]").text()
+    #crea un account con la mail generata e la password
+    r = requests.post("https://api.mail.tm/accounts", json={"address": address, "password": password})
     
-   
+    json_response = r.json()
+    
+    
+ 
+    print ("[INFO] ["+ str(r.status_code)+"] "+"["+r.reason+"] Account creato in data: " + json_response['createdAt'] + " con id: " + json_response['id']+"\n")
+    
+    
+    #recupera il token di autenticazione
+    r = requests.post("https://api.mail.tm/token", json={"address": address, "password": password})   
+    
+    json_response = r.json()
+    
+    auth_token = json_response['token']
+    
+    print("[INFO] Token recuperato: "+auth_token[:10] + "..."+ auth_token[20:10] +" per l'account con id: "+json_response['id']+"\n")
+    
+    
+    input("[INPUT] Premi un tasto per continuare...")
 
+    #recupera la prima mail 
+    r = request.post("https://api.mail.tm/messages/1", headers={"Authorization": "Bearer "+auth_token})
+    
+    json_response = r.json()
+
+    #recupera il link del coupon
+
+    #scarica il coupon
+    
+    
 
     input("Premi Enter per proseguire...")
 
