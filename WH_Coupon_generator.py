@@ -10,6 +10,7 @@ import requests
 import json
 import re
 import os, errno
+from termcolor import colored
 
 
 
@@ -123,6 +124,7 @@ def checkRecivedEmail():
 
 def main():
     
+    os.system('color')
     # headers = {'Content-Type: application/json'}
     browser = checkParamCL()
     global auth_token
@@ -281,7 +283,7 @@ def main():
     # browser.save_full_page_screenshot("coupon.png")
     browser.execute_script("window.scrollTo(0, 1080)") 
     browser.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-    browser.sendKeys(Keys.PAGE_DOWN);
+    
     browser.save_full_page_screenshot("coupon.png")
     
     
