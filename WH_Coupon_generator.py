@@ -283,7 +283,7 @@ def main():
     # browser.save_full_page_screenshot("coupon.png")
     browser.execute_script("window.scrollTo(0, 1080)") 
     browser.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-    
+    time.sleep(5)
     browser.save_full_page_screenshot("coupon.png")
     
     
