@@ -118,8 +118,7 @@ def checkRecivedEmail():
         return mail_id
    
     
-    
-        
+
 
 
 def main():
@@ -138,7 +137,7 @@ def main():
     
     print("\n[######] FASE 1 - GENERAZIONE ACCOUNT EMAIL TEMPORANEA [######]"+"\n")
     print("[INFO] Generazione email: "+address)
-    print("[INFO] Generazione password: "+password+"\n")
+    print("[INFO] Generazione password: "+password)
     
 
     #crea un account con la mail generata e la password
@@ -149,7 +148,7 @@ def main():
     
     account_id = json_response['id']
  
-    print ("[INFO] ["+ str(r.status_code)+"] "+"["+r.reason+"] Account creato in data: " + json_response['createdAt'] + " con id: " + json_response['id']+"\n")
+    print ("[SUCCESS] ["+ str(r.status_code)+"] "+"["+r.reason+"] Account creato in data: " + json_response['createdAt'] + " con id: " + json_response['id']+"\n")
     
     
 
@@ -269,15 +268,22 @@ def main():
     
     print("[######] FASE 4 - FINE [######]"+"\n")
     
-    try: 
-        os.remove("geckodriver.log")
-        os.remove("coupon.png")
-        print("[INFO] Rimozione file temporanei e coupon vecchi")
-    except OSError:
-        pass
+    # try: 
+    #     os.remove("geckodriver.log")
+    #     os.remove("coupon.png")
+    #     print("[INFO] Rimozione file temporanei e coupon vecchi")
+    # except OSError:
+    #     pass
     
+    
+  
     print("[INFO] Salvataggio immagine coupon> coupon.png")
+    # browser.save_full_page_screenshot("coupon.png")
+    browser.execute_script("window.scrollTo(0, 1080)") 
+    browser.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+    browser.sendKeys(Keys.PAGE_DOWN);
     browser.save_full_page_screenshot("coupon.png")
+    
     
     print("[SUCCESS] Coupon salvato!")
     
