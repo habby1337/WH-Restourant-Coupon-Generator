@@ -15,6 +15,8 @@ from selenium.webdriver.common.by import By  # Importa il sistema di ricerca
 # Importa le opzioni per il browser
 from selenium.webdriver.firefox.options import Options
 
+from selenium.webdriver.common.action_chains import ActionChains  # Importa le azioni
+
 
 from colorama import init
 from colorama import Fore, Back, Style
@@ -299,6 +301,7 @@ def main():
 
     browser.find_element(By.XPATH, "/html/body/div[2]/div/a").click()
 
+    # switcha alla nuova scheda con il coupon
     browser.switch_to.window(browser.window_handles[1])
 
     # recupero imagine coupon
@@ -315,9 +318,11 @@ def main():
 
     sendMessage("Salvataggio immagine coupon --> coupon.png", "info")
     # browser.save_full_page_screenshot("coupon.png")
-    # TODO migliorare il sistema di salvataggio immagine coupon
-    browser.execute_script("window.scrollTo(0, 1080)")
-    browser.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+
+    # Invia il tasto END per scendere in fondo
+    actions = ActionChains(browser)
+    actions.send_keys(Keys.END).perform()
+
     time.sleep(5)
     browser.save_full_page_screenshot("coupon.png")
 
