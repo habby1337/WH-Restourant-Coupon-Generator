@@ -156,3 +156,4 @@ TESTS/Testers_funtionality/Tester_closingcapbility.bat
 TESTS/Tester_scrollcapability.bat
 
 testing_timestamp_function.py
+testing_emailaccountgeneration.py

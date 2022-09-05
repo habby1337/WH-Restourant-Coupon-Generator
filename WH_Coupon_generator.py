@@ -25,8 +25,8 @@ from colorama import Fore, Back, Style
 from termcolor import colored
 
 
-# TODO utilizzare un altro sistema di mail in modo da avere un ampio raggio di domini da poter utilizzare per evitare di avere blocchi futuri
 # TODO Migliormaneto attributi inseriti nella comand line / migliorare il sistema con cui si passano i due attributi
+# TODO aggiungere spoofer ip (https://www.proxyscan.io/api/proxy?last_check=3800&country=fr,us&uptime=50&ping=100&limit=10&type=socks4,socks5)
 
 def sendMessage(message, type):
     """Invio messaggio a schermo con colore diverso a seconda del tipo di messaggio
@@ -47,10 +47,10 @@ def sendMessage(message, type):
     elif type == "input":
         return input(colored("[INPUT] ", "white", "on_magenta") + " " + message)
     elif type == "nope":
-        print(getTimestamp() + colored("[NOPE] ",
+        print(getTimestamp() + colored("[NOPE]",
               "white", "on_red") + " " + message)
     elif type == "found":
-        print(getTimestamp() + colored("[FOUND] ",
+        print(getTimestamp() + colored("[FOUND]",
               "white", "on_green") + " " + message)
     elif type == "phase":
         print("\n" + colored("[##########] ", "white", "on_grey") + " " +
@@ -137,15 +137,16 @@ def selectBrowser(browser_type=0):
 def checkRecivedEmail():
     """Controllo se l'email è arrivata
     """
-    sendMessage("[INFO] Controllo se l'email è arrivata...", "info")
+    sendMessage(" Controllo se l'email è arrivata...", "info")
 
     # recupera la lista di mail ricevute
-    r = requests.get("https://api.mail.tm/messages",
-                     headers={"Authorization": "Bearer "+auth_token})
-    json_response = r.json()
+    r = requests.get(
+        "https://www.1secmail.com/api/v1/?action=getMessages&login=" + email_username + "&domain=" + email_domain)
+
+    list_of_emails = r.json()
 
     # controlla se la lista è vuota
-    if json_response['hydra:totalItems'] == 0:
+    if len(list_of_emails) == 0:
         sendMessage(
             "Nessuna email ricevuta, Aspetto 5 secondi e tento nuovamente.", "nope")
         time.sleep(5)
@@ -153,18 +154,24 @@ def checkRecivedEmail():
         return checkRecivedEmail()
     else:
         # se la lista non è vuota recupera  la prima mail
-        json_response = json_response['hydra:member'][0]
+        json_response = list_of_emails[0]
 
-        sendMessage("Mail ricevuta: ", "found")
+        sendMessage(" Mail ricevuta: ", "found")
 
-        print("\n" + colored("[*]", "white", attrs=["bold"]) + "Id: " + json_response['id'] +
-              "\n" + colored("[*]", "white", attrs=["bold"]) + "Mittente: " + json_response['from']['name'] +
+        print("\n" + colored("[*]", "white", attrs=["bold"]) + "Id: " + str(json_response['id']) +
+              "\n" + colored("[*]", "white", attrs=["bold"]) + "Mittente: " + json_response['from'] +
               "\n" + colored("[*]", "white", attrs=["bold"]) + "Oggetto: " + json_response['subject'] +
-              "\n" + colored("[*]", "white", attrs=["bold"]) + "Data: " + json_response['createdAt'] +
-              "\n" + colored("[*]", "white", attrs=["bold"]) + "Download link: " + json_response['downloadUrl'] + "\n")
+              "\n" + colored("[*]", "white", attrs=["bold"]) + "Data: " + json_response['date'])
 
         mail_id = json_response['id']
         return mail_id  # ritorna l'id della mail
+
+
+def getEmailDomain():
+    r = requests.get("https://www.1secmail.com/api/v1/?action=getDomainList")
+    email_domains = r.json()
+
+    return email_domains[random.randint(0, len(email_domains)-1)]
 
 
 def main():
@@ -174,26 +181,19 @@ def main():
     browser = checkParamCL()
 
     global auth_token
+    global email_username
+    global email_domain
 
     # Genera una stringa casuale di 15 caratteri per l'email e password
-    address = ''.join(random.choices(string.ascii_lowercase +
-                      string.digits, k=15))+"@emergentvillage.org"
-    password = ''.join(random.choices(
-        string.ascii_lowercase + string.ascii_uppercase + string.digits, k=10))
+    email_domain = getEmailDomain()
+
+    email_username = ''.join(random.choices(string.ascii_lowercase +
+                                            string.digits, k=15))
+
+    address = email_username+"@" + email_domain
 
     sendMessage("FASE 1 => GENERAZIONE ACCOUNT EMAIL TEMPORANEA", "phase")
-    sendMessage("Generazione Email: " + address, "info")
-    sendMessage("Generazione Password: " + password, "info")
-
-    # crea un account con la mail generata e la password
-    r = requests.post("https://api.mail.tm/accounts",
-                      json={"address": address, "password": password})
-
-    json_response = r.json()
-    account_id = json_response['id']  # Recupera l'id dell'account
-
-    sendMessage("[" + str(r.status_code)+"] "+"["+r.reason+"] Account creato in data: " +
-                json_response['createdAt'] + " con id: " + json_response['id']+"\n", "success")
+    sendMessage("Generazione Email: " + address, "success")
 
     sendMessage("FASE 2 => RIEMPIMENTO FORM WIENER HAUS", "phase")
 
@@ -272,27 +272,21 @@ def main():
 
     sendMessage("FASE 4 => RECUPERO EMAIL CON IL CODICE COUPON", "phase")
 
-    # recupera il token di autenticazione
-    r = requests.post("https://api.mail.tm/token",
-                      json={"address": address, "password": password})
-    json_response = r.json()
-
-    # recupera il token di accesso alle api
-    auth_token = json_response['token']
-
-    sendMessage("Token recuperato: " + auth_token[:5] + "..." + auth_token[20:25] +
-                " per l'account con id: " + json_response['id'], "success")
-
     # recupera la mail ricevuta
-    message_id = checkRecivedEmail()
+    email_id = checkRecivedEmail()
 
-    r = requests.get("https://api.mail.tm/messages/"+message_id,
-                     headers={"Authorization": "Bearer "+auth_token})
-    json_response = r.json()
+    r = requests.get("https://www.1secmail.com/api/v1/?action=readMessage&login=" +
+                     email_username + "&domain=" + email_domain + "&id=" + str(email_id))
+
+    json_response = r.json()['htmlBody']
+
+    print(json_response)
+
+    input("Premi un tasto per continuare...")
 
     # Ricarca il link del coupon
     m = re.search(
-        "\[https://wienerhaus\.it/newsletter/confirm\?key=(.+?)]", json_response['text'])
+        "https://wienerhaus\.it/newsletter/confirm\?key=(.+?)'", json_response)
 
     link_coupon = m.group(1)
 
@@ -342,9 +336,6 @@ def main():
     sendMessage("Coupon salvato!", "success")
 
     sendMessage("Eliminazione account email temporaneo", "info")
-
-    r = requests.delete("https://api.mail.tm/accounts/"+account_id,
-                        headers={"Authorization": "Bearer "+auth_token})
 
     # Uscita dal programma con stile
     for item in 5, 4, 3, 2, 1:
