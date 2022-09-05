@@ -1,7 +1,3 @@
-from selenium import webdriver
-from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.common.by import By
-from selenium.webdriver.firefox.options import Options
 import sys
 import time
 import random
@@ -9,11 +5,49 @@ import string
 import requests
 import json
 import re
-import os, errno
+import os
+import errno
+
+from selenium import webdriver
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.common.by import By
+from selenium.webdriver.firefox.options import Options
+
+
+from colorama import init
+from colorama import Fore, Back, Style
+
 from termcolor import colored
 
 
+# TODO rimuovere tutti i time.sleep con soluzioni await in modo da ridurre il tempo di attesa
+# TODO utilizzare un altro sistema di mail in modo da avere un ampio raggio di domini da poter utilizzare per evitare di avere blocchi futuri
 
+
+def sendMessage(message, type):
+    """Invio messaggio a schermo con colore diverso a seconda del tipo di messaggio
+
+    Args:
+        message (string): Messaggio da inviare a schermo
+        type (string): Tipo di messaggio da inviare a schermo
+    """
+
+    if type == "error":
+        print(colored("[ERROR]", red) + " " + message)
+    elif type == "info":
+        print(colored("[INFO]", cyan) + " " + message)
+    elif type == "success":
+        print(colored("[SUCCESS]", green) + " " + message)
+    elif type == "warning":
+        print(colored("[WARNING]", yellow) + " " + message)
+    elif type == "input":
+        return input(colored("[INPUT]", on_magenta) + " " + message)
+    elif type == "nope":
+        print(colored("[NOPE]", on_red) + " " + message)
+    elif type == "found":
+        print(colored("[FOUND]", on_green) + " " + message)
+    else:
+        print("[*]" + message)
 
 
 def openBrowser(url, browser):
@@ -25,23 +59,17 @@ def openBrowser(url, browser):
     Returns:
         object: Ritorno dell' oggetto browser 
     """
-    
-    print("[INFO] Apertura browser su url \""+url+"\"...")
+
+    sendMessage("Apertura browser su url \""+url+"\"...", "info")
     browser.get(url)
     time.sleep(2)
-    
-    
-
-    
-    
-        
 
 
 def checkParamCL():
     # try:
-    #     #controlla se nell'array sys.argv in pos 1 esiste un elemento 
+    #     #controlla se nell'array sys.argv in pos 1 esiste un elemento
     #     if sys.argv[1]:
-            
+
     #         #se esiste recuperalo dal array
     #         email = sys.argv[1]
     # except:
@@ -49,29 +77,26 @@ def checkParamCL():
     #     print("[WARNING] Valore \"EMAIL\" non impostato tramite Command Line.\n")
     #     email = input("[INPUT] Inserisci l'indirizzo email: ")
 
-
-    #se esiste controlla se nell'array sys.argv in pos 2 esiste un elemento
+    # se esiste controlla se nell'array sys.argv in pos 2 esiste un elemento
     try:
-      if sys.argv[1]:
-         #se esiste recuperalo dal array
-        browser_type = sys.argv[1]
-        browser = selectBrowser(browser_type)
-        
+        if sys.argv[1]:
+           # se esiste recuperalo dal array
+            browser_type = sys.argv[1]
+            browser = selectBrowser(browser_type)
 
     except:
-        #se non esiste chiedi il valore 
-        print("[WARNING] Valore \"BROWSER\" non impostato tramite Command Line.\n")
+        # se non esiste chiedi il valore
+
+        sendMessage(
+            " Valore \"BROWSER\" non impostato tramite Command Line.\n", "warning")
         browser = selectBrowser()
-        
+
     return browser
-    
-    
-def selectBrowser(browser_type = 0):
-  
+
+
+def selectBrowser(browser_type=0):
     """Selezione del browser preferito
     """
-    
-   
 
     if browser_type == "1":
         op = Options()
@@ -85,226 +110,219 @@ def selectBrowser(browser_type = 0):
         return browser
     else:
         if browser_type != 0:
-            print("[ERRORE] Il valore inserito non è corretto.\n")
-        browser_type = input("[INPUT] Usare [1]FIREFOX o [2]CHROME: ")
+            sendMessage("Il valore inserito non è corretto.\n", "error")
+        browser_type = sendMessage("Usare [1]FIREFOX o [2]CHROME: ", "input")
         selectBrowser(browser_type)
-
 
 
 def checkRecivedEmail():
     """Controllo se l'email è arrivata
     """
-    print("\n[INFO] Controllo se l'email è arrivata...")
-    
-    #recupera la lista di mail ricevute
-    r = requests.get("https://api.mail.tm/messages", headers={"Authorization": "Bearer "+auth_token})
+    sendMessage("[INFO] Controllo se l'email è arrivata...", "info")
+
+    # recupera la lista di mail ricevute
+    r = requests.get("https://api.mail.tm/messages",
+                     headers={"Authorization": "Bearer "+auth_token})
     json_response = r.json()
 
-    
     if json_response['hydra:totalItems'] == 0:
-        print("[NOPE] Nessuna email ricevuta, Aspetto 5 secondi e tento nuovamente.")
+        sendMessage(
+            "Nessuna email ricevuta, Aspetto 5 secondi e tento nuovamente.", "nope")
         time.sleep(5)
         return checkRecivedEmail()
     else:
         json_response = json_response['hydra:member'][0]
-    
-        print("[FOUND] Mail ricevuta: " +
-            "\n[*]Id: "+ json_response['id']+
-            "\n[*]Mittente: "+ json_response['from']['name'] +
-            "\n[*]Oggetto: " + json_response['subject']+
-            "\n[*]Data: " + json_response['createdAt']+
-            "\n[*]Download link: " + json_response['downloadUrl']+ "\n") 
-        
+
+        sendMessage("Mail ricevuta: ", "found")
+
+        print("\n" + colored("[*]", "white", attrs=["bold"]) + "Id: " + json_response['id'] +
+              "\n" + colored("[*]", "white", attrs=["bold"]) + "Mittente: " + json_response['from']['name'] +
+              "\n" + colored("[*]", "white", attrs=["bold"]) + "Oggetto: " + json_response['subject'] +
+              "\n" + colored("[*]", "white", attrs=["bold"]) + "Data: " + json_response['createdAt'] +
+              "\n" + colored("[*]", "white", attrs=["bold"]) + "Download link: " + json_response['downloadUrl'] + "\n")
+
         mail_id = json_response['id']
         return mail_id
-   
-    
-
 
 
 def main():
-    
-    os.system('color')
-    # headers = {'Content-Type: application/json'}
+    init()  # inizializza colorama per stampare a colori
+
+    # os.system('color') vecchio sistema di utilizzo colori
+
     browser = checkParamCL()
     global auth_token
-    
-    #Genera una stringa casuale di 15 caratteri per l'email e password
-    
-    address = ''.join(random.choices(string.ascii_lowercase + string.digits, k=15))+"@emergentvillage.org"
-    password = ''.join(random.choices(string.ascii_lowercase + string.ascii_uppercase + string.digits, k=10))
-    
-    # address = "ao13vfntvdbhl1k@emergentvillage.org"	
+
+    # Genera una stringa casuale di 15 caratteri per l'email e password
+
+    address = ''.join(random.choices(string.ascii_lowercase +
+                      string.digits, k=15))+"@emergentvillage.org"
+    password = ''.join(random.choices(
+        string.ascii_lowercase + string.ascii_uppercase + string.digits, k=10))
+
+    # address = "ao13vfntvdbhl1k@emergentvillage.org"
     # password = "h0eT8QIbRp"
-    
+
     print("\n[######] FASE 1 - GENERAZIONE ACCOUNT EMAIL TEMPORANEA [######]"+"\n")
-    print("[INFO] Generazione email: "+address)
-    print("[INFO] Generazione password: "+password)
-    
+    sendMessage("Generazione Email: " + address, "info")
+    sendMessage("Generazione Password: " + password, "info")
 
-    #crea un account con la mail generata e la password
-    
-    r = requests.post("https://api.mail.tm/accounts", json={"address": address, "password": password})
-    
+    # crea un account con la mail generata e la password
+
+    r = requests.post("https://api.mail.tm/accounts",
+                      json={"address": address, "password": password})
+
     json_response = r.json()
-    
+
     account_id = json_response['id']
- 
-    print ("[SUCCESS] ["+ str(r.status_code)+"] "+"["+r.reason+"] Account creato in data: " + json_response['createdAt'] + " con id: " + json_response['id']+"\n")
-    
-    
 
+    sendMessage("[" + str(r.status_code)+"] "+"["+r.reason+"] Account creato in data: " +
+                json_response['createdAt'] + " con id: " + json_response['id']+"\n", "success")
 
-    
-    
+    # print("[SUCCESS] [" + str(r.status_code)+"] "+"["+r.reason+"] Account creato in data: " +
+    #       json_response['createdAt'] + " con id: " + json_response['id']+"\n")
 
     print("\n[######] FASE 2 - RIEMPIMENTO FORM WIENER HAUS [######]"+"\n")
-    #apertura browser WH
+    # apertura browser WH
     openBrowser("https://wienerhaus.it/newsletter", browser)
 
+    sendMessage("Insermiento valori nei rispettivi campi", "info")
 
-    print("[INFO] Inserimento valori nei rispettivi campi")
+    # TODO generare nome e cognome tramite una lista di nomi e cognomi
 
-    name_filed_elem = browser.find_element(By.NAME, "firstname") #ricerca il campo nome
-    surname_field_elem = browser.find_element(By.NAME, "lastname") #ricerca il campo cognome
-    email_field_elem = browser.find_element(By.NAME, "email")#ricera il campo email
+    name_filed_elem = browser.find_element(
+        By.NAME, "firstname")  # ricerca il campo nome
+    surname_field_elem = browser.find_element(
+        By.NAME, "lastname")  # ricerca il campo cognome
+    email_field_elem = browser.find_element(
+        By.NAME, "email")  # ricera il campo email
 
     name_filed_elem.clear()
-    name_filed_elem.send_keys("luca") #inserice il nome nel campo nome
+    # inserice il nome nel campo nome #TODO modificare il valore tramite lista di nomi
+    name_filed_elem.send_keys("luca")
 
     surname_field_elem.clear()
-    surname_field_elem.send_keys("luchetti") #inserisce il cognome nel campo congome
+    # inserisce il cognome nel campo congome
+    # TODO modificare il valore tramite lista di cognomi
+    surname_field_elem.send_keys("luchetti")
 
-    #inserisce la mail presa da linea di comando
+    # inserisce la mail presa da linea di comando
     email_field_elem.clear()
     email_field_elem.send_keys(address)
 
-    print("[SUCCESS] Valori inseriti!")
+    sendMessage("Valori inseriti!", "success")
 
+    sendMessage("Ricerca tasto per i cookies", "info")
 
-    print("[INFO] Ricerca tasto per i coockies")
-    #chiude i cookies
-    cookie_elem = browser.find_element(By.ID, "CybotCookiebotDialogBodyLevelButtonLevelOptinAllowAll").click()
+    # chiude i cookies
+    cookie_elem = browser.find_element(
+        By.ID, "CybotCookiebotDialogBodyLevelButtonLevelOptinAllowAll").click()
 
-    print("[SUCCESS] Chiusura de sti cookies del cavolo")
+    sendMessage("Chiusura de sti cookies del cavolo", "success")
+
     time.sleep(1)
 
-    #clicca sul link informativa privacy
+    # clicca sul link informativa privacy
 
-    print("[INFO] E leggiamo sta privacy... vah")
+    sendMessage("Lettura della privacy... o almeno facendo finta", "info")
 
-    privacy_popup_button_elem = browser.find_element(By.LINK_TEXT,"informativa privacy")
+    privacy_popup_button_elem = browser.find_element(
+        By.LINK_TEXT, "informativa privacy")
     privacy_popup_button_elem.click()
 
-
-
     time.sleep(2)
 
-
-
-    #chiude il popup
-    privacy_popup_elem = browser.find_element(By.XPATH, "/html/body/div[7]/div/div/a")
+    # chiude il popup
+    privacy_popup_elem = browser.find_element(
+        By.XPATH, "/html/body/div[7]/div/div/a")
     privacy_popup_elem.click()
 
-    print("[SUCCESS] Privacy letta e imparata a memoria :)")
+    sendMessage("Privacy letta e imparata a memoria >:)", "success")
 
     time.sleep(1)
 
-    print("[INFO] Ricerca tasto per iscrizione")
-    
+    sendMessage("Ricerca tasto per iscrizione ", "info")
 
     # preme il tasto iscriviti
-    submit_elem = browser.find_element(By.XPATH, "/html/body/div[3]/div[1]/div/form/div[8]/a")
+    submit_elem = browser.find_element(
+        By.XPATH, "/html/body/div[3]/div[1]/div/form/div[8]/a")
     submit_elem.click()
 
-    print("[SUCCESS] Email registrata!!")
+    sendMessage("Iscrizione effettuata con successo", "success")
 
-   
+    sendMessage("Controlla la casella postale: " + address +
+                ", Divertiti con il tuo 15% di socnto", "success")
 
-    print("[SUCCESS] Controlla la casella postale: ", address, ", divertiti con il tuo 15% di sconto")
-    
-    
     print("\n[######] FASE 3 - RECUPERO EMAIL CON IL CODICE COUPON  [######]"+"\n")
-    
-    
-    #recupera il token di autenticazione
-    r = requests.post("https://api.mail.tm/token", json={"address": address, "password": password})   
-    json_response = r.json()
-    
-    auth_token = json_response['token']
-    
-    print("[INFO] Token recuperato: "+auth_token[:5] + "..."+ auth_token[20:25] +" per l'account con id: "+json_response['id']+"\n")
-    
-    #recupera la mail ricevuta
-    message_id = checkRecivedEmail()
-    
-       
 
-    
-    r = requests.get("https://api.mail.tm/messages/"+message_id, headers={"Authorization": "Bearer "+auth_token})
+    # recupera il token di autenticazione
+    r = requests.post("https://api.mail.tm/token",
+                      json={"address": address, "password": password})
     json_response = r.json()
-    
-  
-    
-    
-    #Ricarca il link del coupon       
-    m = re.search("\[https://wienerhaus\.it/newsletter/confirm\?key=(.+?)]", json_response['text'])
-    
+
+    auth_token = json_response['token']
+
+    sendMessage("Token recuperato: " + auth_token[:5] + "..." + auth_token[20:25] +
+                " per l'account con id: " + json_response['id'], "success")
+
+    # recupera la mail ricevuta
+    message_id = checkRecivedEmail()
+
+    r = requests.get("https://api.mail.tm/messages/"+message_id,
+                     headers={"Authorization": "Bearer "+auth_token})
+    json_response = r.json()
+
+    # Ricarca il link del coupon
+    m = re.search(
+        "\[https://wienerhaus\.it/newsletter/confirm\?key=(.+?)]", json_response['text'])
+
     link_coupon = m.group(1)
-    
-    
-    print("[SUCCESS] Chiave del coupon: "+link_coupon+
-          "\n[*]Link del coupon: https://wienerhaus.it/newsletter/confirm?key="+link_coupon)
-    
-    
-    
-    #apre il browser e va alla pagina del coupon
-    openBrowser("https://wienerhaus.it/newsletter/confirm?key="+link_coupon, browser)
-    
+
+    sendMessage("Chiave del coupon: " + link_coupon + "\n " + colored("[*]", "white", attrs=[
+                "bold"]) + "Link del coupon: https://wienerhaus.it/newsletter/confirm?key="+link_coupon, "success")
+
+    # apre il browser e va alla pagina del coupon
+    openBrowser("https://wienerhaus.it/newsletter/confirm?key=" +
+                link_coupon, browser)
+
     browser.find_element(By.XPATH, "/html/body/div[2]/div/a").click()
-    
+
     browser.switch_to.window(browser.window_handles[1])
-    
-    #recupero imagine coupon
+
+    # recupero imagine coupon
     time.sleep(2)
-    
+
     print("[######] FASE 4 - FINE [######]"+"\n")
-    
-    # try: 
+
+    # try:
     #     os.remove("geckodriver.log")
     #     os.remove("coupon.png")
     #     print("[INFO] Rimozione file temporanei e coupon vecchi")
     # except OSError:
     #     pass
-    
-    
-  
-    print("[INFO] Salvataggio immagine coupon> coupon.png")
+
+    sendMessage("Salvataggio immagine coupon --> coupon.png", "info")
     # browser.save_full_page_screenshot("coupon.png")
-    browser.execute_script("window.scrollTo(0, 1080)") 
+    # TODO migliorare il sistema di salvataggio immagine coupon
+    browser.execute_script("window.scrollTo(0, 1080)")
     browser.execute_script("window.scrollTo(0, document.body.scrollHeight);")
     time.sleep(5)
     browser.save_full_page_screenshot("coupon.png")
-    
-    
-    print("[SUCCESS] Coupon salvato!")
-    
-    print("[INFO] Eliminazione account email temporanea")
-    
-    r = requests.delete("https://api.mail.tm/accounts/"+account_id, headers={"Authorization": "Bearer "+auth_token})
-    
-    
+
+    sendMessage("Coupon salvato!", "success")
+
+    sendMessage("Eliminazione account email temporaneo", "info")
+
+    r = requests.delete("https://api.mail.tm/accounts/"+account_id,
+                        headers={"Authorization": "Bearer "+auth_token})
+
     time.sleep(2)
-    
+
     print("\n\n\n\n\n\n....\n....\n...\n..\n.\nBye Bye >:D\n\n\n")
 
     input("Premi un tasto per chiudere il programma")
 
     browser.quit()
-
-
-
-
 
 
 if __name__ == "__main__":
