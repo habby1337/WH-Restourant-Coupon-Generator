@@ -24,9 +24,10 @@ from colorama import Fore, Back, Style
 from termcolor import colored
 
 
-# TODO rimuovere tutti i time.sleep con soluzioni await in modo da ridurre il tempo di attesa
 # TODO utilizzare un altro sistema di mail in modo da avere un ampio raggio di domini da poter utilizzare per evitare di avere blocchi futuri
-
+# TODO rimuovere tutto il codice inutile commentato
+# TODO Pulizzia del codice, formattazione e aggiunta commenti
+# TODO Implementare timestamp dei processi eseguiti
 
 def sendMessage(message, type):
     """Invio messaggio a schermo con colore diverso a seconda del tipo di messaggio
@@ -69,7 +70,7 @@ def openBrowser(url, browser):
 
     sendMessage("Apertura browser su url \""+url+"\"...", "info")
     browser.get(url)
-    time.sleep(2)
+    # time.sleep(2) #attesa per caricamento pagina (non necessario )
 
 
 def checkParamCL():
@@ -323,7 +324,7 @@ def main():
     actions = ActionChains(browser)
     actions.send_keys(Keys.END).perform()
 
-    time.sleep(5)
+    time.sleep(2)
     browser.save_full_page_screenshot("coupon.png")
 
     sendMessage("Coupon salvato!", "success")
@@ -333,7 +334,6 @@ def main():
     r = requests.delete("https://api.mail.tm/accounts/"+account_id,
                         headers={"Authorization": "Bearer "+auth_token})
 
-    time.sleep(2)
 
     print("\n\n\n\n\n\n....\n....\n...\n..\n.\nBye Bye >:D\n\n\n")
 
