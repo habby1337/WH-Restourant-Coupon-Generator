@@ -33,19 +33,22 @@ def sendMessage(message, type):
     """
 
     if type == "error":
-        print(colored("[ERROR]", red) + " " + message)
+        print(colored("[ERROR]", "red") + " " + message)
     elif type == "info":
-        print(colored("[INFO]", cyan) + " " + message)
+        print(colored("[INFO]", "cyan") + " " + message)
     elif type == "success":
-        print(colored("[SUCCESS]", green) + " " + message)
+        print(colored("[SUCCESS]", "green") + " " + message)
     elif type == "warning":
-        print(colored("[WARNING]", yellow) + " " + message)
+        print(colored("[WARNING]", "yellow") + " " + message)
     elif type == "input":
-        return input(colored("[INPUT]", on_magenta) + " " + message)
+        return input(colored("[INPUT]", "on_magenta") + " " + message)
     elif type == "nope":
-        print(colored("[NOPE]", on_red) + " " + message)
+        print(colored("[NOPE]", "on_red") + " " + message)
     elif type == "found":
-        print(colored("[FOUND]", on_green) + " " + message)
+        print(colored("[FOUND]", "on_green") + " " + message)
+    elif type == "phase":
+        print("\n" + colored("[##########]", "on_grey") + " " +
+              message + " " + colored("[##########]", "on_grey") + "\n")
     else:
         print("[*]" + message)
 
@@ -163,7 +166,7 @@ def main():
     # address = "ao13vfntvdbhl1k@emergentvillage.org"
     # password = "h0eT8QIbRp"
 
-    print("\n[######] FASE 1 - GENERAZIONE ACCOUNT EMAIL TEMPORANEA [######]"+"\n")
+    sendMessage("FASE 1 => GENERAZIONE ACCOUNT EMAIL TEMPORANEA", "phase")
     sendMessage("Generazione Email: " + address, "info")
     sendMessage("Generazione Password: " + password, "info")
 
@@ -182,7 +185,7 @@ def main():
     # print("[SUCCESS] [" + str(r.status_code)+"] "+"["+r.reason+"] Account creato in data: " +
     #       json_response['createdAt'] + " con id: " + json_response['id']+"\n")
 
-    print("\n[######] FASE 2 - RIEMPIMENTO FORM WIENER HAUS [######]"+"\n")
+    sendMessage("FASE 2 => RIEMPIMENTO FORM WIENER HAUS", "phase")
     # apertura browser WH
     openBrowser("https://wienerhaus.it/newsletter", browser)
 
@@ -211,6 +214,8 @@ def main():
     email_field_elem.send_keys(address)
 
     sendMessage("Valori inseriti!", "success")
+
+    sendMessage("FASE 3 => CHIUSURA DI TUTTI I VARI POPUP", "phase")
 
     sendMessage("Ricerca tasto per i cookies", "info")
 
@@ -253,7 +258,7 @@ def main():
     sendMessage("Controlla la casella postale: " + address +
                 ", Divertiti con il tuo 15% di socnto", "success")
 
-    print("\n[######] FASE 3 - RECUPERO EMAIL CON IL CODICE COUPON  [######]"+"\n")
+    sendMessage("FASE 4 => RECUPERO EMAIL CON IL CODICE COUPON", "phase")
 
     # recupera il token di autenticazione
     r = requests.post("https://api.mail.tm/token",
@@ -292,7 +297,7 @@ def main():
     # recupero imagine coupon
     time.sleep(2)
 
-    print("[######] FASE 4 - FINE [######]"+"\n")
+    sendMessage("FASE 5 => SALVATAGGIO COUPON", "phase")
 
     # try:
     #     os.remove("geckodriver.log")
