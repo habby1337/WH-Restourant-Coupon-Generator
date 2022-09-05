@@ -18,6 +18,8 @@ from selenium.webdriver.firefox.options import Options
 
 from selenium.webdriver.common.action_chains import ActionChains  # Importa le azioni
 
+from selenium.webdriver.common.proxy import Proxy, ProxyType  # Proxy
+
 # importa il necessario per il colore su terminale
 from colorama import init
 from colorama import Fore, Back, Style
@@ -26,7 +28,6 @@ from termcolor import colored
 
 
 # TODO Migliormaneto attributi inseriti nella comand line / migliorare il sistema con cui si passano i due attributi
-# TODO aggiungere spoofer ip (https://www.proxyscan.io/api/proxy?last_check=3800&country=fr,us&uptime=50&ping=100&limit=10&type=socks4,socks5)
 
 def sendMessage(message, type):
     """Invio messaggio a schermo con colore diverso a seconda del tipo di messaggio
@@ -113,6 +114,14 @@ def checkParamCL():
     return browser
 
 
+def getProxyIP():
+    """Recupera un proxy ip
+    """
+    r = requests.get(
+        "https://www.proxyscan.io/api/proxy?last_check=3800&country=fr,us&uptime=50&ping=50&limit=10&type=socks4,socks5").json()
+    return str(r[0]["Ip"]) + ":" + str(r[0]["Port"])
+
+
 def selectBrowser(browser_type=0):
     """Selezione del browser preferito
     """
@@ -120,7 +129,20 @@ def selectBrowser(browser_type=0):
     if browser_type == "1":
         op = Options()
         op.add_argument("--headless")
-        browser = webdriver.Firefox(options=op)
+
+        PROXY = getProxyIP()
+
+        proxy = Proxy({
+            'proxyType': ProxyType.MANUAL,
+            'httpProxy': PROXY,
+            'ftpProxy': PROXY,
+            'sslProxy': PROXY,
+            'noProxy': 'None'  # set this value as desired
+        })
+
+        browser = webdriver.Firefox(
+            options=op, proxy=proxy)
+
         return browser
     elif browser_type == "2":
         op = webdriver.ChromeOptions()
@@ -279,10 +301,6 @@ def main():
                      email_username + "&domain=" + email_domain + "&id=" + str(email_id))
 
     json_response = r.json()['htmlBody']
-
-    print(json_response)
-
-    input("Premi un tasto per continuare...")
 
     # Ricarca il link del coupon
     m = re.search(
