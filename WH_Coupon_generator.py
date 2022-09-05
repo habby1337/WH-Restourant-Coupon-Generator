@@ -27,7 +27,17 @@ from colorama import Fore, Back, Style
 from termcolor import colored
 
 
+# CONFIGURAZIONE PARAMETRI PROXY
+ProxySettings = {}
+ProxySettings["last_check"] = "9800"
+ProxySettings["uptime"] = "50"
+ProxySettings["ping"] = "90"
+ProxySettings["country"] = "it,fr,de,al,uk,ru,ro,pl,se,mt,md,me,fn,ag,yt,us,br,jp,mx,co,bg,gb,nl,by,es,at"
+
+
 # TODO Migliormaneto attributi inseriti nella comand line / migliorare il sistema con cui si passano i due attributi
+# TODO invia coupon tramite chat su telegram
+# TODO testare se il proxy è funzionante
 
 def sendMessage(message, type):
     """Invio messaggio a schermo con colore diverso a seconda del tipo di messaggio
@@ -115,10 +125,12 @@ def checkParamCL():
 
 
 def getProxyIP():
+    proxysettings = Proxy()
     """Recupera un proxy ip
     """
+
     r = requests.get(
-        "https://www.proxyscan.io/api/proxy?last_check=3800&country=fr,us&uptime=50&ping=50&limit=10&type=socks4,socks5").json()
+        "https://www.proxyscan.io/api/proxy?last_check="+ProxySettings["last_check"]+"&country="+ProxySettings["country"]+"&uptime="+ProxySettings["uptime"]+"&ping="+ProxySettings["ping"]+"&limit=1&type=socks4,socks5").json()
     return str(r[0]["Ip"]) + ":" + str(r[0]["Port"])
 
 
