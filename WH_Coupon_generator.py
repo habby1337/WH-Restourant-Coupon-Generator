@@ -35,10 +35,6 @@ ProxySettings["ping"] = "90"
 ProxySettings["country"] = "it,fr,de,al,uk,ru,ro,pl,se,mt,md,me,fn,ag,yt,us,br,jp,mx,co,bg,gb,nl,by,es,at"
 
 
-# TODO Migliormaneto attributi inseriti nella comand line / migliorare il sistema con cui si passano i due attributi
-# TODO invia coupon tramite chat su telegram
-# TODO testare se il proxy è funzionante
-
 def sendMessage(message, type):
     """Invio messaggio a schermo con colore diverso a seconda del tipo di messaggio
 
@@ -96,6 +92,10 @@ def openBrowser(url, browser):
 
 
 def checkParamCL():
+    # HACK saltata verifica parametri da linea di comando
+    # TODO Migliormaneto attributi inseriti nella comand line / migliorare il sistema con cui si passano i due attributi
+
+    # -[x] verifica parametro del browser
     # try:
     #     #controlla se nell'array sys.argv in pos 1 esiste un elemento
     #     if sys.argv[1]:
@@ -128,6 +128,8 @@ def getProxyIP():
     proxysettings = Proxy()
     """Recupera un proxy ip
     """
+    # FIXME verificare se il proxy è UP & RUNNING prima di creare la connessione
+    # BUG ancune volte il proxy non viene restituito dalle api, creare un controllo e finche il proxy non è disponibile non proseguire
 
     r = requests.get(
         "https://www.proxyscan.io/api/proxy?last_check="+ProxySettings["last_check"]+"&country="+ProxySettings["country"]+"&uptime="+ProxySettings["uptime"]+"&ping="+ProxySettings["ping"]+"&limit=1&type=socks4,socks5").json()
@@ -362,6 +364,8 @@ def main():
 
     time.sleep(2)
     browser.save_full_page_screenshot("coupon.png")
+
+    # TODO invia coupon tramite chat su telegram
 
     sendMessage("Coupon salvato!", "success")
 
