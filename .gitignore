@@ -151,3 +151,7 @@ cython_debug/
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 #.idea/
 TESTS/coupon.png
+TESTS/Testers_funtionality/Tester_scrollcapability.bat
+TESTS/Testers_funtionality/Tester_closingcapbility.bat
+TESTS/Tester_scrollcapability.bat
+*.bat
