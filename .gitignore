@@ -155,3 +155,4 @@ TESTS/Testers_funtionality/Tester_scrollcapability.bat
 TESTS/Testers_funtionality/Tester_closingcapbility.bat
 TESTS/Tester_scrollcapability.bat
 
+testing_timestamp_function.py

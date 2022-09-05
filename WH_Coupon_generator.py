@@ -7,6 +7,7 @@ import json
 import re
 import os
 import errno
+import datetime
 
 from selenium import webdriver
 # Importa il sistema di tasti da selenium
@@ -25,7 +26,6 @@ from termcolor import colored
 
 
 # TODO utilizzare un altro sistema di mail in modo da avere un ampio raggio di domini da poter utilizzare per evitare di avere blocchi futuri
-# TODO Implementare timestamp dei processi eseguiti
 # TODO Migliormaneto attributi inseriti nella comand line / migliorare il sistema con cui si passano i due attributi
 
 def sendMessage(message, type):
@@ -37,24 +37,36 @@ def sendMessage(message, type):
     """
 
     if type == "error":
-        print(colored("[ERROR]", "red") + " " + message)
+        print(getTimestamp() + colored("[ERROR] ", "red") + " " + message)
     elif type == "info":
-        print(colored("[INFO]", "cyan") + " " + message)
+        print(getTimestamp() + colored("[INFO] ", "cyan") + " " + message)
     elif type == "success":
-        print(colored("[SUCCESS]", "green") + " " + message)
+        print(getTimestamp() + colored("[SUCCESS] ", "green") + " " + message)
     elif type == "warning":
-        print(colored("[WARNING]", "yellow") + " " + message)
+        print(getTimestamp() + colored("[WARNING] ", "yellow") + " " + message)
     elif type == "input":
-        return input(colored("[INPUT]", "on_magenta") + " " + message)
+        return input(colored("[INPUT] ", "white", "on_magenta") + " " + message)
     elif type == "nope":
-        print(colored("[NOPE]", "on_red") + " " + message)
+        print(getTimestamp() + colored("[NOPE] ",
+              "white", "on_red") + " " + message)
     elif type == "found":
-        print(colored("[FOUND]", "on_green") + " " + message)
+        print(getTimestamp() + colored("[FOUND] ",
+              "white", "on_green") + " " + message)
     elif type == "phase":
-        print("\n" + colored("[##########]", "on_grey") + " " +
-              message + " " + colored("[##########]", "on_grey") + "\n")
+        print("\n" + colored("[##########] ", "white", "on_grey") + " " +
+              message + " " + colored(" [##########]", "white", "on_grey") + "\n")
     else:
-        print("[*]" + message)
+        print(getTimestamp() + "[*] " + message)
+
+
+def getTimestamp():
+    """Scrive il timestamp corrente
+
+    Returns:
+        timestamp: timestamp elaborato
+    """
+    now = datetime.datetime.now()
+    return "[" + str(now.hour) + ":" + str(now.minute) + ":" + str(now.second) + "] "
 
 
 def openBrowser(url, browser):
