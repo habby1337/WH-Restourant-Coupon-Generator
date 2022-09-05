@@ -1,0 +1,1 @@
+start cmd /k python ../../testing_closing_function.py 
