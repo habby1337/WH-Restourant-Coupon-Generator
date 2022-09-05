@@ -17,7 +17,7 @@ from selenium.webdriver.firefox.options import Options
 
 from selenium.webdriver.common.action_chains import ActionChains  # Importa le azioni
 
-
+# importa il necessario per il colore su terminale
 from colorama import init
 from colorama import Fore, Back, Style
 
@@ -25,9 +25,9 @@ from termcolor import colored
 
 
 # TODO utilizzare un altro sistema di mail in modo da avere un ampio raggio di domini da poter utilizzare per evitare di avere blocchi futuri
-# TODO rimuovere tutto il codice inutile commentato
-# TODO Pulizzia del codice, formattazione e aggiunta commenti
+# TODO Sistema rimozione vecchi file creati (log, png, ecc)
 # TODO Implementare timestamp dei processi eseguiti
+# TODO Migliormaneto attributi inseriti nella comand line / migliorare il sistema con cui si passano i due attributi
 
 def sendMessage(message, type):
     """Invio messaggio a schermo con colore diverso a seconda del tipo di messaggio
@@ -133,12 +133,15 @@ def checkRecivedEmail():
                      headers={"Authorization": "Bearer "+auth_token})
     json_response = r.json()
 
+    # controlla se la lista è vuota
     if json_response['hydra:totalItems'] == 0:
         sendMessage(
             "Nessuna email ricevuta, Aspetto 5 secondi e tento nuovamente.", "nope")
         time.sleep(5)
+        # richiama la funzione per controllare se la lista è vuota
         return checkRecivedEmail()
     else:
+        # se la lista non è vuota recupera  la prima mail
         json_response = json_response['hydra:member'][0]
 
         sendMessage("Mail ricevuta: ", "found")
@@ -150,54 +153,45 @@ def checkRecivedEmail():
               "\n" + colored("[*]", "white", attrs=["bold"]) + "Download link: " + json_response['downloadUrl'] + "\n")
 
         mail_id = json_response['id']
-        return mail_id
+        return mail_id  # ritorna l'id della mail
 
 
 def main():
     init()  # inizializza colorama per stampare a colori
 
-    # os.system('color') vecchio sistema di utilizzo colori
-
+    # Crea l'oggetto browser
     browser = checkParamCL()
+
     global auth_token
 
     # Genera una stringa casuale di 15 caratteri per l'email e password
-
     address = ''.join(random.choices(string.ascii_lowercase +
                       string.digits, k=15))+"@emergentvillage.org"
     password = ''.join(random.choices(
         string.ascii_lowercase + string.ascii_uppercase + string.digits, k=10))
-
-    # address = "ao13vfntvdbhl1k@emergentvillage.org"
-    # password = "h0eT8QIbRp"
 
     sendMessage("FASE 1 => GENERAZIONE ACCOUNT EMAIL TEMPORANEA", "phase")
     sendMessage("Generazione Email: " + address, "info")
     sendMessage("Generazione Password: " + password, "info")
 
     # crea un account con la mail generata e la password
-
     r = requests.post("https://api.mail.tm/accounts",
                       json={"address": address, "password": password})
 
     json_response = r.json()
-
-    account_id = json_response['id']
+    account_id = json_response['id']  # Recupera l'id dell'account
 
     sendMessage("[" + str(r.status_code)+"] "+"["+r.reason+"] Account creato in data: " +
                 json_response['createdAt'] + " con id: " + json_response['id']+"\n", "success")
 
-    # print("[SUCCESS] [" + str(r.status_code)+"] "+"["+r.reason+"] Account creato in data: " +
-    #       json_response['createdAt'] + " con id: " + json_response['id']+"\n")
-
     sendMessage("FASE 2 => RIEMPIMENTO FORM WIENER HAUS", "phase")
+
     # apertura browser WH
     openBrowser("https://wienerhaus.it/newsletter", browser)
 
     sendMessage("Insermiento valori nei rispettivi campi", "info")
 
-    # Richiesta per generazione nome e cognome
-
+    # Richiesta per generazione nome e cognome da fonte api
     r = requests.get("https://randomuser.me/api/?inc=name&nat=de&result=1")
 
     name = r.json()['results'][0]['name']['first']
@@ -210,13 +204,12 @@ def main():
     email_field_elem = browser.find_element(
         By.NAME, "email")  # ricera il campo email
 
+    # pulisce e inserice il nome nel campo nome
     name_filed_elem.clear()
-    # inserice il nome nel campo nome
     name_filed_elem.send_keys(name)
 
+    # pulisce e inserisce il cognome nel campo congome
     surname_field_elem.clear()
-    # inserisce il cognome nel campo congome
-
     surname_field_elem.send_keys(surname)
 
     # inserisce la mail presa da linea di comando
@@ -224,9 +217,7 @@ def main():
     email_field_elem.send_keys(address)
 
     sendMessage("Valori inseriti!", "success")
-
     sendMessage("FASE 3 => CHIUSURA DI TUTTI I VARI POPUP", "phase")
-
     sendMessage("Ricerca tasto per i cookies", "info")
 
     # chiude i cookies
@@ -275,6 +266,7 @@ def main():
                       json={"address": address, "password": password})
     json_response = r.json()
 
+    # recupera il token di accesso alle api
     auth_token = json_response['token']
 
     sendMessage("Token recuperato: " + auth_token[:5] + "..." + auth_token[20:25] +
@@ -318,7 +310,6 @@ def main():
     #     pass
 
     sendMessage("Salvataggio immagine coupon --> coupon.png", "info")
-    # browser.save_full_page_screenshot("coupon.png")
 
     # Invia il tasto END per scendere in fondo
     actions = ActionChains(browser)
