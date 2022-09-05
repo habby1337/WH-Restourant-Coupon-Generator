@@ -9,8 +9,10 @@ import os
 import errno
 
 from selenium import webdriver
+# Importa il sistema di tasti da selenium
 from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.common.by import By
+from selenium.webdriver.common.by import By  # Importa il sistema di ricerca
+# Importa le opzioni per il browser
 from selenium.webdriver.firefox.options import Options
 
 
@@ -191,7 +193,12 @@ def main():
 
     sendMessage("Insermiento valori nei rispettivi campi", "info")
 
-    # TODO generare nome e cognome tramite una lista di nomi e cognomi
+    # Richiesta per generazione nome e cognome
+
+    r = requests.get("https://randomuser.me/api/?inc=name&nat=de&result=1")
+
+    name = r.json()['results'][0]['name']['first']
+    surname = r.json()['results'][0]['name']['last']
 
     name_filed_elem = browser.find_element(
         By.NAME, "firstname")  # ricerca il campo nome
@@ -201,13 +208,13 @@ def main():
         By.NAME, "email")  # ricera il campo email
 
     name_filed_elem.clear()
-    # inserice il nome nel campo nome #TODO modificare il valore tramite lista di nomi
-    name_filed_elem.send_keys("luca")
+    # inserice il nome nel campo nome
+    name_filed_elem.send_keys(name)
 
     surname_field_elem.clear()
     # inserisce il cognome nel campo congome
-    # TODO modificare il valore tramite lista di cognomi
-    surname_field_elem.send_keys("luchetti")
+
+    surname_field_elem.send_keys(surname)
 
     # inserisce la mail presa da linea di comando
     email_field_elem.clear()
