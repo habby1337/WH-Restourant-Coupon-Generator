@@ -1,1 +1,0 @@
-start cmd /k python ../WH_Coupon_generator.py test@test.it 1
