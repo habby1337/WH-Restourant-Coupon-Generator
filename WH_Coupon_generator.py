@@ -25,7 +25,6 @@ from termcolor import colored
 
 
 # TODO utilizzare un altro sistema di mail in modo da avere un ampio raggio di domini da poter utilizzare per evitare di avere blocchi futuri
-# TODO Sistema rimozione vecchi file creati (log, png, ecc)
 # TODO Implementare timestamp dei processi eseguiti
 # TODO Migliormaneto attributi inseriti nella comand line / migliorare il sistema con cui si passano i due attributi
 
@@ -302,12 +301,22 @@ def main():
 
     sendMessage("FASE 5 => SALVATAGGIO COUPON", "phase")
 
-    # try:
-    #     os.remove("geckodriver.log")
-    #     os.remove("coupon.png")
-    #     print("[INFO] Rimozione file temporanei e coupon vecchi")
-    # except OSError:
-    #     pass
+    # Pulizzia file vecchi (coupon e log)
+    try:
+        os.remove("coupon.png")
+        sendMessage(
+            "Il file coupon.png esisteva, allora è stato cancellato...", "scuccess")
+    except OSError:
+        sendMessage(
+            "FIle coupon.png non esiste, quindi non serve cancellarlo...", "info")
+
+    try:
+        os.remove("geckodriver.log")
+        sendMessage(
+            "Il file geckodriver.log esisteva, allora è stato cancellato...", "scuccess")
+    except OSError:
+        sendMessage(
+            "FIle geckodriver.log non esiste, quindi non serve cancellarlo...", "info")
 
     sendMessage("Salvataggio immagine coupon --> coupon.png", "info")
 
