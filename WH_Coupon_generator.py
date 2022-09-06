@@ -61,8 +61,8 @@ def sendMessage(message, type):
         print(getTimestamp() + colored("[FOUND]",
               "white", "on_green") + " " + message)
     elif type == "phase":
-        print("\n" + colored("[##########] ", "white", "on_grey") + " " +
-              message + " " + colored(" [##########]", "white", "on_grey") + "\n")
+        print("\n" + colored("[##########]  ", "white", "on_grey") + " " +
+              message + " " + colored("  [##########]", "white", "on_grey") + "\n")
     else:
         print(getTimestamp() + "[*] " + message)
 
@@ -93,6 +93,11 @@ def openBrowser(url, browser):
 
 
 def checkParamCL():
+    """Controlla se sono stati impostati dei valori nei parametri di avvio tramite command line del programma
+
+    Returns:
+        object: IL browser selezionato
+    """
     # HACK saltata verifica parametri da linea di comando
     # TODO Migliormaneto attributi inseriti nella comand line / migliorare il sistema con cui si passano i due attributi
 
@@ -126,9 +131,13 @@ def checkParamCL():
 
 
 def getProxyIP():
-    proxysettings = Proxy()
-    """Recupera un proxy ip
+    """Recupera una lista di proxy da api pubblica e ne ritorna il primo con il ping minore
+
+    Returns:
+        sting: ip:porta del proxy con il ping minore
     """
+
+    proxysettings = Proxy()
     # FIXME verificare se il proxy è UP & RUNNING prima di creare la connessione
     # BUG ancune volte il proxy non viene restituito dalle api, creare un controllo e finche il proxy non è disponibile non proseguire
 
@@ -138,7 +147,13 @@ def getProxyIP():
 
 
 def selectBrowser(browser_type=0):
-    """Selezione del browser preferito
+    """Seleziona il browser da utilizzare e applica le impostazioni Proxy, Headless e UserAgent
+
+    Args:
+        browser_type (int, optional): valore per la selezione tra Firefox = 1 o Chrome = 2. Defaults to 0.
+
+    Returns:
+        object: browser selezionato
     """
 
     if browser_type == "1":
@@ -172,7 +187,10 @@ def selectBrowser(browser_type=0):
 
 
 def checkRecivedEmail():
-    """Controllo se l'email è arrivata
+    """Controlla se all'indirizzo generato è arrivata la mail di conferma
+
+    Returns:
+        mail_id: identificativo della mail di conferma
     """
     sendMessage(" Controllo se l'email è arrivata...", "info")
 
@@ -205,6 +223,11 @@ def checkRecivedEmail():
 
 
 def getEmailDomain():
+    """Richiesta alle api di 1secmail per i domini disponibili
+
+    Returns:
+        email_domain: ritorna un dominio casuale tra i domini disponibili
+    """
     r = requests.get("https://www.1secmail.com/api/v1/?action=getDomainList")
     email_domains = r.json()
 
