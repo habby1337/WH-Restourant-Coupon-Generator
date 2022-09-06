@@ -36,6 +36,10 @@ ProxySettings["ping"] = "90"
 ProxySettings["country"] = "it,fr,de,al,uk,ru,ro,pl,se,mt,md,me,fn,ag,yt,us,br,jp,mx,co,bg,gb,nl,by,es,at"
 # RIFERIMENTO>> https://www.proxyscan.io/api
 
+# CONFIGURAZIONE TELEGRAM
+telegram_bot_api_key = "'5719741980:AAHld--Wl6a9gQPM-ifAUig-g2Qm5PDs8q0"
+telegram_chat_id = "150571265"
+
 
 def sendMessage(message, type):
     """Invio messaggio a schermo con colore diverso a seconda del tipo di messaggio
@@ -258,7 +262,7 @@ def sendTelegramMessage(chat_id, pdf_coupon_link):
         chat_id (string): identificativo della chat a cui mandare il messaggio
         pdf_coupon_link (string): codice generato del coupon
     """
-    bot = telepot.Bot('5719741980:AAHld--Wl6a9gQPM-ifAUig-g2Qm5PDs8q0')
+    bot = telepot.Bot(telegram_bot_api_key)
 
     try:
         bot.sendPhoto(chat_id=chat_id, photo=open('STARTERS/coupon.png', 'rb'),
@@ -426,7 +430,7 @@ def main():
     browser.save_full_page_screenshot("coupon.png")
 
     # Invia messaggio tramite telegram
-    sendTelegramMessage("150571265", link_coupon)  # Chat id
+    sendTelegramMessage(telegram_chat_id, link_coupon)  # Chat id
 
     sendMessage("Coupon salvato!", "success")
 
