@@ -47,7 +47,19 @@ $python WH_Coupon_generator.py <browser type>
 `
 $echo start cmd /k python /path/to/WH_Coupon_generator.py 1 > Starter_Script.bat
 `
-__-
+___
+
+### 📁 File eliminabili non necessari
+Lista dei file e cartelle eliminabili.
+- Images/
+- STARTERS/
+- .gitattributes
+- .gitignore
+- LICENSE
+- README.md
+
+___
+
 ## ⚙ Valori per Command line
 
 | Browser Name | Value |
@@ -62,7 +74,7 @@ Da utilizzare nel seguente modo:
 
 
 ___
-## 🆕 Aggiornamenti programmati
+# 🆕 Aggiornamenti programmati
 
 - [x] Inviare coupon tramite chat telegram
 - [x] Verificare il funzionamento dei proxy prima dell' utilizzo
