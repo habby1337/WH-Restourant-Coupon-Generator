@@ -32,7 +32,7 @@ from termcolor import colored
 # CONFIGURAZIONE PARAMETRI PROXY
 ProxySettings = {}
 ProxySettings["last_check"] = "9800"
-ProxySettings["uptime"] = "50"
+ProxySettings["uptime"] = "20"
 ProxySettings["ping"] = "90"
 ProxySettings["country"] = "it,fr,de,al,uk,ru,ro,pl,se,mt,md,me,fn,ag,yt,us,br,jp,mx,co,bg,gb,nl,by,es,at"
 
@@ -163,7 +163,7 @@ def getProxyIP():
             return getProxyIP()
 
 
-def selectBrowser(browser_type=0):
+def selectBrowser(browser_type="1"):  # HACK il valore deve essere 0
     """Seleziona il browser da utilizzare e applica le impostazioni Proxy, Headless e UserAgent
 
     Args:
