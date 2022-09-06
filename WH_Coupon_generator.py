@@ -85,7 +85,7 @@ def openBrowser(url, browser):
         url (string): Url del sitoweb da visitare
 
     Returns:
-        object: Ritorno dell' oggetto browser 
+        object: Ritorno dell' oggetto browser
     """
 
     sendMessage("Apertura browser su url \""+url+"\"...", "info")
