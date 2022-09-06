@@ -15,9 +15,6 @@
 
 **Table of Contents**
 
-[TOCM]
-
-[TOC]
 
 # Come installare
 ## Cosa scaricare
@@ -63,7 +60,7 @@ Da utilizzare nel seguente modo:
 
 
 ___
-### Aggiornamenti programmati
+## Aggiornamenti programmati
 
 - [x] Inviare coupon tramite chat telegram
 - [x] Verificare il funzionamento dei proxy prima dell' utilizzo
