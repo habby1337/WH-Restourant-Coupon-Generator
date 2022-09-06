@@ -46,15 +46,15 @@ def sendMessage(message, type):
     """
 
     if type == "error":
-        print(getTimestamp() + colored("[ERROR] ", "red") + " " + message)
+        print(getTimestamp() + colored("[ERROR]", "red") + " " + message)
     elif type == "info":
-        print(getTimestamp() + colored("[INFO] ", "cyan") + " " + message)
+        print(getTimestamp() + colored("[INFO]", "cyan") + " " + message)
     elif type == "success":
-        print(getTimestamp() + colored("[SUCCESS] ", "green") + " " + message)
+        print(getTimestamp() + colored("[SUCCESS]", "green") + " " + message)
     elif type == "warning":
-        print(getTimestamp() + colored("[WARNING] ", "yellow") + " " + message)
+        print(getTimestamp() + colored("[WARNING]", "yellow") + " " + message)
     elif type == "input":
-        return input(colored("[INPUT] ", "white", "on_magenta") + " " + message)
+        return input(colored("[INPUT]", "white", "on_magenta") + " " + message)
     elif type == "nope":
         print(getTimestamp() + colored("[NOPE]",
               "white", "on_red") + " " + message)
@@ -62,8 +62,8 @@ def sendMessage(message, type):
         print(getTimestamp() + colored("[FOUND]",
               "white", "on_green") + " " + message)
     elif type == "phase":
-        print("\n" + colored("[##########]  ", "white", "on_grey") + " " +
-              message + " " + colored("  [##########]", "white", "on_grey") + "\n")
+        print("\n" + colored("[##########] ", "white", "on_grey") + " " +
+              message + " " + colored(" [##########]", "white", "on_grey") + "\n")
     else:
         print(getTimestamp() + "[*] " + message)
 
