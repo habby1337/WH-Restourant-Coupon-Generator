@@ -9,6 +9,7 @@ import os
 import errno
 import datetime
 import telepot
+import socket
 
 from selenium import webdriver
 # Importa il sistema di tasti da selenium
@@ -136,14 +137,30 @@ def getProxyIP():
     Returns:
         sting: ip:porta del proxy con il ping minore
     """
-
+    sendMessage("Recupero lista proxy dalle API pubbliche...", "info")
     proxysettings = Proxy()
-    # FIXME verificare se il proxy è UP & RUNNING prima di creare la connessione
-    # BUG ancune volte il proxy non viene restituito dalle api, creare un controllo e finche il proxy non è disponibile non proseguire
 
     r = requests.get(
-        "https://www.proxyscan.io/api/proxy?last_check="+ProxySettings["last_check"]+"&country="+ProxySettings["country"]+"&uptime="+ProxySettings["uptime"]+"&ping="+ProxySettings["ping"]+"&limit=1&type=socks4,socks5").json()
-    return str(r[0]["Ip"]) + ":" + str(r[0]["Port"])
+        "https://www.proxyscan.io/api/proxy?last_check="+ProxySettings["last_check"]+"&country="+ProxySettings["country"]+"&uptime="+ProxySettings["uptime"]+"&ping="+ProxySettings["ping"]+"&limit=1&type=socks5").json()
+
+    if not r:
+        sendMessage("Nessun proxy disponibile, tento nuovamente...", "warning")
+        return getProxyIP()
+    else:
+        sendMessage(
+            "Proxy disponibili! Selezionato il: " + str(r[0]["Ip"])+":"+str(r[0]["Port"]) + ". Verifico che sia ONLINE...", "success")
+
+        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        result = sock.connect_ex((str(r[0]["Ip"]), r[0]["Port"]))
+
+        if result == 0:
+            sendMessage("Proxy trovato: "+str(r[0]
+                        ["Ip"])+":"+str(r[0]["Port"]) + ". Utilizzo questo... ", "success")
+            return str(r[0]["Ip"]) + ":" + str(r[0]["Port"])
+        else:
+            sendMessage(
+                "Il Proxy recuperato risulta OFFLINE, nuova ricerca...", "warning")
+            return getProxyIP()
 
 
 def selectBrowser(browser_type=0):
