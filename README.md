@@ -1,4 +1,4 @@
-### Features
+### ⭐ Features
 
 - Generazione automatica accout email temporaneo
 - Compilazione form di WH
@@ -6,7 +6,7 @@
 - Download automatico del coupon
 - Invio diretto su telegram del coupom
 
-# Wiener Haus Coupon Generator
+# 🎟 Wiener Haus Coupon Generator
 
 ![](https://github.com/habby1337/WH-Restourant-Coupon-Generator/blob/main/images/logo_200x200.png?raw=true)
 
