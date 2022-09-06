@@ -24,7 +24,6 @@ from selenium.webdriver.common.proxy import Proxy, ProxyType  # Proxy
 
 # importa il necessario per il colore su terminale
 from colorama import init
-from colorama import Fore, Back, Style
 
 from termcolor import colored
 
