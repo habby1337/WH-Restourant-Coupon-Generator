@@ -8,6 +8,7 @@ import re
 import os
 import errno
 import datetime
+import telepot
 
 from selenium import webdriver
 # Importa il sistema di tasti da selenium
@@ -210,6 +211,25 @@ def getEmailDomain():
     return email_domains[random.randint(0, len(email_domains)-1)]
 
 
+def sendTelegramMessage(chat_id, pdf_coupon_link):
+    """Invia l'immagine e il link del coupon tramite la chat telegram passata come parametro
+
+    Args:
+        chat_id (string): identificativo della chat a cui mandare il messaggio
+        pdf_coupon_link (string): codice generato del coupon
+    """
+    bot = telepot.Bot('5719741980:AAHld--Wl6a9gQPM-ifAUig-g2Qm5PDs8q0')
+
+    try:
+        bot.sendPhoto(chat_id=chat_id, photo=open('STARTERS/coupon.png', 'rb'),
+                      caption="✳ **W**iener **H**aus *Coupon* *Generator* ✳\n*☺ Coupon Generato Correttamente ✅*\n\n 🌐 Link PDF: [Clicca qui](https://wienerhaus.it/newsletter/confirm?key=" +
+                      pdf_coupon_link + ")",
+                      parse_mode='MarkdownV2')
+        sendMessage("Messaggio inviato correttamente", "success")
+    except:
+        sendMessage("Errore nell'invio del messaggio", "error")
+
+
 def main():
     init()  # inizializza colorama per stampare a colori
 
@@ -365,7 +385,8 @@ def main():
     time.sleep(2)
     browser.save_full_page_screenshot("coupon.png")
 
-    # TODO invia coupon tramite chat su telegram
+    # Invia messaggio tramite telegram
+    sendTelegramMessage("150571265", link_coupon)  # Chat id
 
     sendMessage("Coupon salvato!", "success")
 

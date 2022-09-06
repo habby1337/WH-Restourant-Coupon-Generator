@@ -158,3 +158,4 @@ TESTS/Tester_scrollcapability.bat
 testing_timestamp_function.py
 testing_emailaccountgeneration.py
 STARTERS/coupon.png
+testing_telegrammessaage_function.py
