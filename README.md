@@ -21,12 +21,19 @@
 # ❓ Come installare
 ## 🤷🏻‍♂️ Cosa scaricare
 
-1. Installare **Python** con una versione: *< 3.10.4*
-2. Scaricare i webdriver per Selenium
+1. 
+2. Installare **Python** con una versione: *< 3.10.4*
+3. Scaricare i webdriver per Selenium
 	- Chrome (chromedriver) > [Clicca qui](https://chromedriver.chromium.org/downloads)
 	- Firefox (geckodriver) > [Clicca qui](https://github.com/mozilla/geckodriver/releases/)
-3. Recuperare la chiave per il bot di telegram > [Telegram Docs](https://core.telegram.org/bots#6-botfather)
-4. Recupearare la propria chat id di telegram > [Telegram Chat with MyIdBot](https://t.me/myidbot)
+4. Recuperare la chiave per il bot di telegram > [Telegram Docs](https://core.telegram.org/bots#6-botfather)
+5. Recupearare la propria chat id di telegram > [Telegram Chat with MyIdBot](https://t.me/myidbot)
+
+### Inserire i valori
+Aprire lo script e importare il:
+- Token API Bot Telegram:
+- Chat id di Telegram
+- Proxy Setting
 
 ### 🧾 Installare Requisiti
 Per installare i requisiti eseguire il comando: 
@@ -47,16 +54,6 @@ $python WH_Coupon_generator.py <browser type>
 `
 $echo start cmd /k python /path/to/WH_Coupon_generator.py 1 > Starter_Script.bat
 `
-___
-
-### 📁 File eliminabili non necessari
-Lista dei file e cartelle eliminabili.
-- Images/
-- STARTERS/
-- .gitattributes
-- .gitignore
-- LICENSE
-- README.md
 
 ___
 
