@@ -19,8 +19,8 @@
 
 [TOC]
 
-#Come installare
-##Cosa scaricare
+# Come installare
+## Cosa scaricare
 
 1. Installare **Python** con una versione: *< 3.10.4*
 2. Scaricare i webdriver per Selenium
@@ -29,13 +29,13 @@
 3. Recuperare la chiave per il bot di telegram > [Telegram Docs](https://core.telegram.org/bots#6-botfather)
 4. Recupearare la propria chat id di telegram > [Telegram Chat with MyIdBot](https://t.me/myidbot)
 
-###Installare Requisiti
+### Installare Requisiti
 Per installare i requisiti eseguire il comando: 
 ```
 $cd /path/to/WH-Restourant-Coupon-Generator
 $pip install -r requirements.txt
 ```
-####H4 Come avviare
+#### Come avviare
 Per avviare il generatore eseguire si posso usare i seguenti modi
 
 - **Tramite Command Line:**
