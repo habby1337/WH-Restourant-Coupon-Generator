@@ -37,7 +37,7 @@ ProxySettings["country"] = "it,fr,de,al,uk,ru,ro,pl,se,mt,md,me,fn,ag,yt,us,br,j
 # RIFERIMENTO>> https://www.proxyscan.io/api
 
 # CONFIGURAZIONE TELEGRAM
-telegram_bot_api_key = "'5719741980:AAHld--Wl6a9gQPM-ifAUig-g2Qm5PDs8q0"
+telegram_bot_api_key = "5719741980:AAHld--Wl6a9gQPM-ifAUig-g2Qm5PDs8q0"
 telegram_chat_id = "150571265"
 
 
