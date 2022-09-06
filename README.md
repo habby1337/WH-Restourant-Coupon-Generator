@@ -1,10 +1,4 @@
-### ⭐ Features
 
-- Generazione automatica accout email temporaneo
-- Compilazione form di WH
-- Eliminazione automatica dell'account email 
-- Download automatico del coupon
-- Invio diretto su telegram del coupom
 
 # 🎟 Wiener Haus Coupon Generator
 
@@ -13,11 +7,19 @@
 ![](https://img.shields.io/github/issues/habby1337/WH-Restourant-Coupon-Generator) ![](https://img.shields.io/github/forks/pandao/editor.md.svg) ![](https://img.shields.io/github/tag/pandao/editor.md.svg) ![](https://img.shields.io/github/release/pandao/editor.md.svg)  ![](https://img.shields.io/bower/v/editor.md.svg)
 
 
-**Table of Contents**
 
 
-# Come installare
-## Cosa scaricare
+# ⭐ Features
+
+- Generazione automatica accout email temporaneo
+- Compilazione form di WH
+- Eliminazione automatica dell'account email 
+- Download automatico del coupon
+- Invio diretto su telegram del coupom
+
+
+# ❓ Come installare
+## 🤷🏻‍♂️ Cosa scaricare
 
 1. Installare **Python** con una versione: *< 3.10.4*
 2. Scaricare i webdriver per Selenium
@@ -26,13 +28,13 @@
 3. Recuperare la chiave per il bot di telegram > [Telegram Docs](https://core.telegram.org/bots#6-botfather)
 4. Recupearare la propria chat id di telegram > [Telegram Chat with MyIdBot](https://t.me/myidbot)
 
-### Installare Requisiti
+### 🧾 Installare Requisiti
 Per installare i requisiti eseguire il comando: 
 ```
 $cd /path/to/WH-Restourant-Coupon-Generator
 $pip install -r requirements.txt
 ```
-#### Come avviare
+#### 🔥 Come avviare
 Per avviare il generatore eseguire si posso usare i seguenti modi
 
 - **Tramite Command Line:**
@@ -46,7 +48,7 @@ $python WH_Coupon_generator.py <browser type>
 $echo start cmd /k python /path/to/WH_Coupon_generator.py 1 > Starter_Script.bat
 `
 __-
-## Valori per Command line
+## ⚙ Valori per Command line
 
 | Browser Name | Value |
 | ------------ | ----- |
@@ -60,7 +62,7 @@ Da utilizzare nel seguente modo:
 
 
 ___
-## Aggiornamenti programmati
+## 🆕 Aggiornamenti programmati
 
 - [x] Inviare coupon tramite chat telegram
 - [x] Verificare il funzionamento dei proxy prima dell' utilizzo
