@@ -21,7 +21,7 @@
 # ❓ Come installare
 ## 🤷🏻‍♂️ Cosa scaricare
 
-1. 
+1. Scaricare l'ultima versione di [WH Coupon Generator](https://github.com/habby1337/WH-Restourant-Coupon-Generator/releases)
 2. Installare **Python** con una versione: *< 3.10.4*
 3. Scaricare i webdriver per Selenium
 	- Chrome (chromedriver) > [Clicca qui](https://chromedriver.chromium.org/downloads)
@@ -54,6 +54,8 @@ Aprire il file e inserire i seguenti valori:
       - Valore più basso: Server più performante 
     - ProxySettings["country"]:
       - Lista dei paesi in cui viene recuperato il server, puoi vedere la lista da [qui](https://www.proxyscan.io/api)
+
+
 Puoi vedere tutti i valori dalla pagina delle API, [clicca qui](https://www.proxyscan.io/api)
 
 ### 🧾 Installare Requisiti
