@@ -27,18 +27,12 @@ from colorama import init
 
 from termcolor import colored
 
+import config
 
-# CONFIGURAZIONE PARAMETRI PROXY
-ProxySettings = {}
-ProxySettings["last_check"] = "9800"
-ProxySettings["uptime"] = "20"
-ProxySettings["ping"] = "90"
-ProxySettings["country"] = "it,fr,de,al,uk,ru,ro,pl,se,mt,md,me,fn,ag,yt,us,br,jp,mx,co,bg,gb,nl,by,es,at"
-# RIFERIMENTO>> https://www.proxyscan.io/api
 
 # CONFIGURAZIONE TELEGRAM
-telegram_bot_api_key = "5719741980:AAHld--Wl6a9gQPM-ifAUig-g2Qm5PDs8q0"
-telegram_chat_id = "150571265"
+telegram_bot_api_key = config.telelgram_bot_api_key
+telegram_chat_id = config.telegram_chat_id
 
 
 def sendMessage(message, type):
@@ -142,10 +136,9 @@ def getProxyIP():
         sting: ip:porta del proxy con il ping minore
     """
     sendMessage("Recupero lista proxy dalle API pubbliche...", "info")
-    proxysettings = Proxy()
 
     r = requests.get(
-        "https://www.proxyscan.io/api/proxy?last_check="+ProxySettings["last_check"]+"&country="+ProxySettings["country"]+"&uptime="+ProxySettings["uptime"]+"&ping="+ProxySettings["ping"]+"&limit=1&type=socks5").json()
+        "https://www.proxyscan.io/api/proxy?last_check="+config.ProxySettings["last_check"]+"&country="+config.ProxySettings["country"]+"&uptime="+config.ProxySettings["uptime"]+"&ping="+config.ProxySettings["ping"]+"&limit=1&type=socks5").json()
 
     if not r:
         sendMessage("Nessun proxy disponibile, tento nuovamente...", "warning")
@@ -280,7 +273,6 @@ def main():
     # Crea l'oggetto browser
     browser = checkParamCL()
 
-    global auth_token
     global email_username
     global email_domain
 
