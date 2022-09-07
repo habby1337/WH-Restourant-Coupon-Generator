@@ -58,12 +58,17 @@ Aprire il file e inserire i seguenti valori:
 
 Puoi vedere tutti i valori dalla pagina delle API, [clicca qui](https://www.proxyscan.io/api)
 
+___
+
 ### 🧾 Installare Requisiti
 Per installare i requisiti eseguire il comando: 
 ```
 $cd /path/to/WH-Restourant-Coupon-Generator
 $pip install -r requirements.txt
 ```
+
+___
+
 #### 🔥 Come avviare
 Per avviare il generatore eseguire si posso usare i seguenti modi
 
@@ -92,9 +97,10 @@ Da utilizzare nel seguente modo:
 `$python WH_Coupon_generator.py <value>`
 
 
-
 ___
-# 🆕 Aggiornamenti programmati
+
+
+# 🆕 Aggiornamenti futuri in programma
 
 - [x] Inviare coupon tramite chat telegram
 - [x] Verificare il funzionamento dei proxy prima dell' utilizzo
