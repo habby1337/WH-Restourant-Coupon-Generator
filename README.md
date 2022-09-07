@@ -31,7 +31,7 @@
 
 ___
 
-### Configurare il file Config.py
+### 🛠 Configurare il file Config.py
 Aprire il file e inserire i seguenti valori:
 - Token API Bot Telegram:
 `telelgram_bot_api_key = "<yourTelegramBotApiKey>"`
@@ -113,3 +113,10 @@ ___
 - [ ] Ottimizzare l'esecuzione
 - [ ] Generazione logs
 
+
+___
+
+# 🩹 BUG noti in corso di patch
+
+- Possibilità di utilizzare un solo browser (Firefox)
+- I valori passati tramite CL non funzionano 
