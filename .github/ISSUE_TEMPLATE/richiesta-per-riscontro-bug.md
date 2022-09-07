@@ -23,10 +23,11 @@ Una chiara e concisa descrizione di quello che dovrebbe accadere.
 **Screenshots**
 Se possibile, aggiungere gli screenshot per aiutare la spiegazione del problema.
 
-**Desktop (perfavore completa le seguenti informazioni):**
+**(perfavore completa le seguenti informazioni):**
  - OS: [e.g. Windows 10]
  - Browser [e.g. chrome, firefox]
  - Version [e.g. 22]
+ - Python [e.g. 1.3.0]
 
 **Informazioni aggiuntive**
 Aggiungi ogni altro tipo di informazione qui sotto.
