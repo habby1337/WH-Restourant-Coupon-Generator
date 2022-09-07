@@ -4,7 +4,7 @@
 
 ![](https://github.com/habby1337/WH-Restourant-Coupon-Generator/blob/main/images/logo_200x200.png?raw=true)
 
-![](https://img.shields.io/github/issues/habby1337/WH-Restourant-Coupon-Generator) ![](https://img.shields.io/github/forks/pandao/editor.md.svg) ![](https://img.shields.io/github/tag/pandao/editor.md.svg) ![](https://img.shields.io/github/release/pandao/editor.md.svg)  ![](https://img.shields.io/bower/v/editor.md.svg)
+![](https://img.shields.io/github/issues/habby1337/WH-Restourant-Coupon-Generator) ![](https://img.shields.io/github/forks/habby1337/WH-Restourant-Coupon-Generator) ![](https://img.shields.io/github/tag/pandao/editor.md.svg) ![](https://img.shields.io/github/release/pandao/editor.md.svg)  ![](https://img.shields.io/bower/v/editor.md.svg)
 
 
 
