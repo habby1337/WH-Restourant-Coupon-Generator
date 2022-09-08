@@ -10,6 +10,7 @@ import errno
 import datetime
 import telepot
 import socket
+import logging
 
 from selenium import webdriver
 # Importa il sistema di tasti da selenium
@@ -90,6 +91,8 @@ def openBrowser(url, browser):
         object: Ritorno dell' oggetto browser
     """
 
+    # TODO Aggiungere il logging delle attivita della funzione
+
     sendMessage("Apertura browser su url \""+url+"\"...", "info")
     browser.get(url)
     # time.sleep(2) #attesa per caricamento pagina (non necessario )
@@ -103,6 +106,7 @@ def checkParamCL():
     """
     # HACK saltata verifica parametri da linea di comando
     # TODO Migliormaneto attributi inseriti nella comand line / migliorare il sistema con cui si passano i due attributi
+    # TODO Aggiungere il logging delle attivita della funzione
 
     # -[x] verifica parametro del browser
     # try:
@@ -139,6 +143,9 @@ def getProxyIP():
     Returns:
         sting: ip:porta del proxy con il ping minore
     """
+
+    # TODO Aggiungere il logging delle attivita della funzione
+
     sendMessage("Recupero lista proxy dalle API pubbliche...", "info")
 
     r = requests.get(
@@ -173,7 +180,7 @@ def selectBrowser(browser_type="1"):  # HACK il valore deve essere 0 senza virgo
     Returns:
         object: browser selezionato
     """
-
+    # TODO Aggiungere il logging delle attivita della funzione
     if browser_type == "1":
         op = Options()
         op.add_argument("--headless")
@@ -211,6 +218,7 @@ def checkRecivedEmail():
         mail_id: identificativo della mail di conferma
     """
     sendMessage(" Controllo se l'email è arrivata...", "info")
+    logging.info("Controllo se l'email è arrivata...")
 
     # recupera la lista di mail ricevute
     r = requests.get(
@@ -222,6 +230,7 @@ def checkRecivedEmail():
     if len(list_of_emails) == 0:
         sendMessage(
             "Nessuna email ricevuta, Aspetto 5 secondi e tento nuovamente.", "nope")
+        logging.warning("Nessuna email ricevuta, in attesa...")
         time.sleep(5)
         # richiama la funzione per controllare se la lista è vuota
         return checkRecivedEmail()
@@ -230,6 +239,7 @@ def checkRecivedEmail():
         json_response = list_of_emails[0]
 
         sendMessage(" Mail ricevuta: ", "found")
+        logging.info("Mail ricevuta, ID: " + str(json_response['id']))
 
         print("\n" + colored("[*]", "white", attrs=["bold"]) + "Id: " + str(json_response['id']) +
               "\n" + colored("[*]", "white", attrs=["bold"]) + "Mittente: " + json_response['from'] +
@@ -246,6 +256,8 @@ def getEmailDomain():
     Returns:
         email_domain: ritorna un dominio casuale tra i domini disponibili
     """
+
+    logging.info("Recupero lista domini disponibili...")
     r = requests.get("https://www.1secmail.com/api/v1/?action=getDomainList")
     email_domains = r.json()
 
@@ -259,9 +271,17 @@ def sendTelegramMessage(chat_id, pdf_coupon_link):
         chat_id (string): identificativo della chat a cui mandare il messaggio
         pdf_coupon_link (string): codice generato del coupon
     """
+
+    logging.info("Invio immagine coupon.png tramite Telegram...")
+
     bot = telepot.Bot(telegram_bot_api_key)
 
+    logging.info("Creazione istanza Bot Telegram...")
+
+    logging.info("Invio link coupon tramite Telegram...")
+
     try:
+        logging.info("Prova invio messaggio su telegram.")
         bot.sendPhoto(chat_id=chat_id, photo=open('STARTERS/coupon.png', 'rb'),
                       caption="✳ **W**iener **H**aus *Coupon* *Generator* ✳\n*☺ Coupon Generato Correttamente ✅*\n\n 🌐 Link PDF: [Clicca qui](https://wienerhaus.it/newsletter/confirm?key=" +
                       pdf_coupon_link + ")",
@@ -272,13 +292,22 @@ def sendTelegramMessage(chat_id, pdf_coupon_link):
 
 
 def main():
+    logging.basicConfig(filename='WH-LOG.log', level=logging.INFO, format='%(asctime)s %(message)s',
+                        datefmt='%m/%d/%Y %I:%M:%S %p', filemode='w', encoding='utf-8', force=True)
+
+    logging.info("Inizio esecuzione script")
     init()  # inizializza colorama per stampare a colori
 
+    logging.index("Inizializzazione browser")
     # Crea l'oggetto browser
     browser = checkParamCL()
 
+    logging.info("Inizio procedura di registrazione")
+
     global email_username
     global email_domain
+
+    logging.info("Generazione indirizzo email")
 
     # Genera una stringa casuale di 15 caratteri per l'email e password
     email_domain = getEmailDomain()
@@ -288,16 +317,21 @@ def main():
 
     address = email_username+"@" + email_domain
 
+    logging.info("Indirizzo email generato: " + address)
+
     sendMessage("FASE 1 => GENERAZIONE ACCOUNT EMAIL TEMPORANEA", "phase")
     sendMessage("Generazione Email: " + address, "success")
 
     sendMessage("FASE 2 => RIEMPIMENTO FORM WIENER HAUS", "phase")
+
+    logging.info("Apertura pagina di registrazione")
 
     # apertura browser WH
     openBrowser("https://wienerhaus.it/newsletter", browser)
 
     sendMessage("Insermiento valori nei rispettivi campi", "info")
 
+    logging.info("Generazione nome e cognome casuale")
     # Richiesta per generazione nome e cognome da fonte api
     r = requests.get("https://randomuser.me/api/?inc=name&nat=de&result=1")
 
@@ -315,27 +349,39 @@ def main():
     name_filed_elem.clear()
     name_filed_elem.send_keys(name)
 
+    logging.info("Nome inserito: " + name)
+
     # pulisce e inserisce il cognome nel campo congome
     surname_field_elem.clear()
     surname_field_elem.send_keys(surname)
+
+    logging.info("Cognome inserito: " + surname)
 
     # inserisce la mail presa da linea di comando
     email_field_elem.clear()
     email_field_elem.send_keys(address)
 
+    logging.info("Email inserita: " + address)
+
+    logging.info("Inserimento valori completato")
+
     sendMessage("Valori inseriti!", "success")
     sendMessage("FASE 3 => CHIUSURA DI TUTTI I VARI POPUP", "phase")
     sendMessage("Ricerca tasto per i cookies", "info")
 
+    logging.info("Ricerca tasto per i cookies")
     # chiude i cookies
     cookie_elem = browser.find_element(
         By.ID, "CybotCookiebotDialogBodyLevelButtonLevelOptinAllowAll").click()
+
+    logging.info("Tasto cookies trovato e chiuso")
 
     sendMessage("Chiusura de sti cookies del cavolo", "success")
 
     time.sleep(1)
 
     # clicca sul link informativa privacy
+    logging.info("Ricerca tasto per la privacy")
 
     sendMessage("Lettura della privacy... o almeno facendo finta", "info")
 
@@ -350,9 +396,13 @@ def main():
         By.XPATH, "/html/body/div[7]/div/div/a")
     privacy_popup_elem.click()
 
+    logging.info("Tasto privacy trovato e chiuso")
+
     sendMessage("Privacy letta e imparata a memoria >:)", "success")
 
     time.sleep(1)
+
+    logging.info("Ricerca tasto per la newsletter")
 
     sendMessage("Ricerca tasto per iscrizione ", "info")
 
@@ -361,6 +411,8 @@ def main():
         By.XPATH, "/html/body/div[3]/div[1]/div/form/div[8]/a")
     submit_elem.click()
 
+    logging.info("Tasto iscrizione trovato e premuto")
+
     sendMessage("Iscrizione effettuata con successo", "success")
 
     sendMessage("Controlla la casella postale: " + address +
@@ -368,19 +420,26 @@ def main():
 
     sendMessage("FASE 4 => RECUPERO EMAIL CON IL CODICE COUPON", "phase")
 
+    logging.info("Inizio procedura di recupero email con codice sconto")
     # recupera la mail ricevuta
     email_id = checkRecivedEmail()
+
+    logging.info("Recupero email completato")
 
     r = requests.get("https://www.1secmail.com/api/v1/?action=readMessage&login=" +
                      email_username + "&domain=" + email_domain + "&id=" + str(email_id))
 
     json_response = r.json()['htmlBody']
 
+    logging.info("Recupero codice sconto")
+
     # Ricarca il link del coupon
     m = re.search(
         "https://wienerhaus\.it/newsletter/confirm\?key=(.+?)'", json_response)
 
     link_coupon = m.group(1)
+
+    logging.info("Codice sconto recuperato: " + link_coupon)
 
     sendMessage("Chiave del coupon: " + link_coupon + "\n " + colored("[*]", "white", attrs=[
                 "bold"]) + "Link del coupon: https://wienerhaus.it/newsletter/confirm?key="+link_coupon, "success")
@@ -389,35 +448,48 @@ def main():
     openBrowser("https://wienerhaus.it/newsletter/confirm?key=" +
                 link_coupon, browser)
 
+    logging.info("Apertura pagina del coupon")
+
     browser.find_element(By.XPATH, "/html/body/div[2]/div/a").click()
 
     # switcha alla nuova scheda con il coupon
     browser.switch_to.window(browser.window_handles[1])
+
+    logging.info("Switch alla nuova scheda")
 
     # recupero imagine coupon
     time.sleep(2)
 
     sendMessage("FASE 5 => SALVATAGGIO COUPON", "phase")
 
+    logging.info("Inizio rimozione file vecchi")
     # Pulizzia file vecchi (coupon e log)
     try:
+        logging.info("Rimozione file \"coupon.png\"")
         os.remove("coupon.png")
         sendMessage(
             "Il file coupon.png esisteva, allora è stato cancellato...", "scuccess")
     except OSError:
+        logging.error("Il file \"coupon.png\" non esiste")
         sendMessage(
-            "FIle coupon.png non esiste, quindi non serve cancellarlo...", "info")
+            "Il file coupon.png non esiste, quindi non serve cancellarlo...", "error")
 
     try:
+        logging.info("Rimozione file \"log.txt\"")
         os.remove("geckodriver.log")
         sendMessage(
             "Il file geckodriver.log esisteva, allora è stato cancellato...", "scuccess")
     except OSError:
+        logging.error("Il file \"geckodriver.log\" non esiste")
+        sendMessage(
+            "Il file geckodriver.log non esiste, quindi non serve cancellarlo...", "error")
+
         sendMessage(
             "FIle geckodriver.log non esiste, quindi non serve cancellarlo...", "info")
 
-    # TODO Eliminare file log precedenti del programma
+    logging.info("Rimozione file completata")
 
+    logging.info("Inizio salvataggio coupon")
     sendMessage("Salvataggio immagine coupon --> coupon.png", "info")
 
     # Invia il tasto END per scendere in fondo
@@ -427,6 +499,7 @@ def main():
     time.sleep(2)
     browser.save_full_page_screenshot("coupon.png")
 
+    logging.info("Salvataggio coupon completato > coupon.png")
     # Invia messaggio tramite telegram
     sendTelegramMessage(telegram_chat_id, link_coupon)  # Chat id
 
@@ -434,12 +507,15 @@ def main():
 
     sendMessage("Eliminazione account email temporaneo", "info")
 
+    logging.info("Eliminazione account email temporaneo")
+
     # Uscita dal programma con stile
     for item in 5, 4, 3, 2, 1:
         print(colored("[GOODBYE]", "magenta", attrs=["underline", "bold"]) + " Programma terminato in " +
               colored("  " + str(item) + "  ", "magenta", "on_white", attrs=["bold"],) + " secondi" + colored(" [GOODBYE]", "magenta", attrs=["underline", "bold"]) + "\r", end="")
         time.sleep(1)
 
+    logging.info("Programma terminato")
     os.system("cls")
 
     print(colored("[EXIT] Bye Bye >:D\n\n\r", "magenta", attrs=["bold"]))
