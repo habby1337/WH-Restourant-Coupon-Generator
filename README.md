@@ -12,11 +12,17 @@
 
 # ⭐ Features
 
-- Generazione automatica accout email temporaneo
+- 1Click generator, non serve inserire informazioni
+- Generazione automatica account email temporaneo
 - Compilazione form di WH
 - Eliminazione automatica dell'account email 
 - Download automatico del coupon
 - Invio diretto su telegram del coupom
+- Proxy automatico 
+- Configurazione competa per le impostazioni del proxy
+- Veloce e semplice da configurare 
+- Open-Source
+
 
 
 # ❓ Come installare
@@ -108,6 +114,7 @@ ___
 - [x] Eliminazione vecchi file coupon e log
 - [x] Time stamp delle operazioni
 - [x] Generazione logs
+- [x] Verifica funzionamento e risposta delle API 
 - [ ] Migliormaneto attributi inseriti nella comand line 
     - [ ] Valore del browser
     - [ ] Telegram token
