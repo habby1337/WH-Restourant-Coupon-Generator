@@ -196,10 +196,19 @@ def selectBrowser(browser_type="1"):  # HACK il valore deve essere 0 senza virgo
             'noProxy': 'None'  # set this value as desired
         })
 
-        browser = webdriver.Firefox(
-            options=op, proxy=proxy)
+        sendMessage("Inizializzazione browser...", "info")
+        try:
+            browser = webdriver.Firefox(
+                options=op, proxy=proxy)
+            sendMessage("Browser inizializzato!", "success")
+            return browser
+        except Exception as e:
+            sendMessage(
+                "Errore durante l'inizializzazione del browser(Visualizza i log per l'errore completo) , Provo nuovamente..", "error")
+            logging.error(
+                "Errore durante l'inizializzazione del browser: "+str(e))
+            return selectBrowser("1")
 
-        return browser
     elif browser_type == "2":
         op = webdriver.ChromeOptions()
         op.add_argument('headless')
