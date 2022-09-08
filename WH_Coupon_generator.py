@@ -296,7 +296,7 @@ def sendTelegramMessage(chat_id, pdf_coupon_link):
 
     try:
         logging.info("Prova invio messaggio su telegram.")
-        bot.sendPhoto(chat_id=chat_id, photo=open('STARTERS/coupon.png', 'rb'),
+        bot.sendPhoto(chat_id=chat_id, photo=open(working_path + '\coupon.png', 'rb'),
                       caption="✳ **W**iener **H**aus *Coupon* *Generator* ✳\n*☺ Coupon Generato Correttamente ✅*\n\n 🌐 Link PDF: [Clicca qui](https://wienerhaus.it/newsletter/confirm?key=" +
                       pdf_coupon_link + ")",
                       parse_mode='MarkdownV2')
@@ -365,6 +365,7 @@ def cleanOldFiles():
 
 
 def main():
+
     logging.basicConfig(filename='WH-LOG.log', level=logging.INFO, format='%(asctime)s %(message)s',
                         datefmt='%m/%d/%Y %I:%M:%S %p', filemode='w', encoding='utf-8', force=True)
 
@@ -547,8 +548,9 @@ def main():
     actions.send_keys(Keys.END).perform()
 
     time.sleep(2)
-    browser.save_full_page_screenshot("coupon.png")
+    browser.save_full_page_screenshot(working_path + "\coupon.png")
 
+    time.sleep(2)
     logging.info("Salvataggio coupon completato > coupon.png")
     # Invia messaggio tramite telegram
     sendTelegramMessage(telegram_chat_id, link_coupon)  # Chat id
