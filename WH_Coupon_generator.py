@@ -303,6 +303,63 @@ def sendTelegramMessage(chat_id, pdf_coupon_link):
         logging.error("Errore nell'invio del messaggio: " + str(e))
 
 
+def getRandomPerson():
+    """Recupera un nominativo casuale da un url api (json) https://randomuser.me/
+
+    """
+
+    try:
+        sendMessage("Sto generando Nome e Cognome...", "info")
+        # Richiesta per generazione nome e cognome da fonte api
+        r = requests.get("https://randomuser.me/api/?inc=name&nat=de&result=1")
+        global person_name, person_surname
+        person_name = r.json()['results'][0]['name']['first']
+        person_surname = r.json()['results'][0]['name']['last']
+    except Exception as e:
+        sendMessage(
+            "Errore nella generazione del nome e cognome, sto tentando nuovamente", "nope")
+        logging.error("Errore generazione nome e cognome")
+        return getRandomPerson()
+
+
+def cleanOldFiles():
+    logging.info("Inizio rimozione file vecchi")
+    sendMessage("Rimozione file vecchi...", "info")
+    # Pulizzia file vecchi (coupon e log)
+    try:
+        logging.info("Rimozione file \"coupon.png\"")
+        os.remove(working_path + "\coupon.png")
+        sendMessage(
+            "Il file coupon.png esisteva, allora è stato cancellato...", "scuccess")
+    except OSError:
+        logging.error("Il file \"coupon.png\" non esiste")
+        sendMessage(
+            "Il file coupon.png non esiste, quindi non serve cancellarlo...", "info")
+
+    try:
+        logging.info("Rimozione file \"log.txt\"")
+        os.remove(working_path + "\geckodriver.log")
+        sendMessage(
+            "Il file geckodriver.log esisteva, allora è stato cancellato...", "scuccess")
+    except OSError:
+        logging.error("Il file \"geckodriver.log\" non esiste")
+        sendMessage(
+            "Il file geckodriver.log non esiste, quindi non serve cancellarlo...", "info")
+
+    try:
+        logging.info("Rimozione file \"WH-LOG.log\"")
+        os.remove(working_path + "\WH-LOG.log")
+        sendMessage(
+            "Il file WH-LOG.log esisteva, allora è stato cancellato...", "scuccess")
+    except OSError:
+        logging.error("Il file \"WH-LOG.log\" non esiste")
+        sendMessage(
+            "Il file WH-LOG.log non esiste, quindi non serve cancellarlo...", "info")
+
+    logging.info("Rimozione file completata")
+    sendMessage("Rimozione file completata", "success")
+
+
 def main():
     logging.basicConfig(filename='WH-LOG.log', level=logging.INFO, format='%(asctime)s %(message)s',
                         datefmt='%m/%d/%Y %I:%M:%S %p', filemode='w', encoding='utf-8', force=True)
@@ -346,11 +403,8 @@ def main():
     sendMessage("Insermiento valori nei rispettivi campi", "info")
 
     logging.info("Generazione nome e cognome casuale")
-    # Richiesta per generazione nome e cognome da fonte api
-    r = requests.get("https://randomuser.me/api/?inc=name&nat=de&result=1")
 
-    name = r.json()['results'][0]['name']['first']
-    surname = r.json()['results'][0]['name']['last']
+    getRandomPerson()  # Recpuera nome e cognome casuale
 
     name_filed_elem = browser.find_element(
         By.NAME, "firstname")  # ricerca il campo nome
@@ -361,15 +415,18 @@ def main():
 
     # pulisce e inserice il nome nel campo nome
     name_filed_elem.clear()
-    name_filed_elem.send_keys(name)
+    name_filed_elem.send_keys(person_name)
 
-    logging.info("Nome inserito: " + name)
+    logging.info("Nome inserito: " + person_name)
 
     # pulisce e inserisce il cognome nel campo congome
     surname_field_elem.clear()
-    surname_field_elem.send_keys(surname)
+    surname_field_elem.send_keys(person_surname)
 
-    logging.info("Cognome inserito: " + surname)
+    logging.info("Cognome inserito: " + person_surname)
+
+    sendMessage("Nome e cognome generati, Si chiama: " +
+                person_name + " " + person_surname, "success")
 
     # inserisce la mail presa da linea di comando
     email_field_elem.clear()
