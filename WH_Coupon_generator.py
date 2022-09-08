@@ -36,6 +36,10 @@ import config
 telegram_bot_api_key = config.telelgram_bot_api_key
 telegram_chat_id = config.telegram_chat_id
 
+person_name = ""
+person_surname = ""
+working_path = os.getcwd()  # recupera il path di lavoro
+
 # TODO Aggiungere generazione log per le operazioni
 # TODO Spostare le funzioni in file separati
 # FIXME Migliorare i tempi di esecuzione e attesa
@@ -365,6 +369,8 @@ def main():
                         datefmt='%m/%d/%Y %I:%M:%S %p', filemode='w', encoding='utf-8', force=True)
 
     # GUI.GUI()  # Inizializa la gui
+    sendMessage("FASE 0 => RIMOZIONE FILE VECCHI", "phase")
+    cleanOldFiles()
 
     logging.info("Inizio esecuzione script")
     init()  # inizializza colorama per stampare a colori
@@ -533,40 +539,6 @@ def main():
 
     sendMessage("FASE 5 => SALVATAGGIO COUPON", "phase")
 
-    logging.info("Inizio rimozione file vecchi")
-    # Pulizzia file vecchi (coupon e log)
-    try:
-        logging.info("Rimozione file \"coupon.png\"")
-        os.remove("coupon.png")
-        sendMessage(
-            "Il file coupon.png esisteva, allora è stato cancellato...", "scuccess")
-    except OSError:
-        logging.error("Il file \"coupon.png\" non esiste")
-        sendMessage(
-            "Il file coupon.png non esiste, quindi non serve cancellarlo...", "error")
-
-    try:
-        logging.info("Rimozione file \"log.txt\"")
-        os.remove("geckodriver.log")
-        sendMessage(
-            "Il file geckodriver.log esisteva, allora è stato cancellato...", "scuccess")
-    except OSError:
-        logging.error("Il file \"geckodriver.log\" non esiste")
-        sendMessage(
-            "Il file geckodriver.log non esiste, quindi non serve cancellarlo...", "error")
-
-    try:
-        logging.info("Rimozione file \"WH-LOG.log\"")
-        os.remove("WH-LOG.log")
-        sendMessage(
-            "Il file WH-LOG.log esisteva, allora è stato cancellato...", "scuccess")
-    except OSError:
-        logging.error("Il file \"WH-LOG.log\" non esiste")
-        sendMessage(
-            "Il file WH-LOG.log non esiste, quindi non serve cancellarlo...", "error")
-
-    logging.info("Rimozione file completata")
-
     logging.info("Inizio salvataggio coupon")
     sendMessage("Salvataggio immagine coupon --> coupon.png", "info")
 
@@ -584,7 +556,6 @@ def main():
     sendMessage("Coupon salvato!", "success")
 
     sendMessage("Eliminazione account email temporaneo", "info")
-
     logging.info("Eliminazione account email temporaneo")
 
     # Uscita dal programma con stile
