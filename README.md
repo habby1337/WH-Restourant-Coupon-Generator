@@ -113,6 +113,8 @@ ___
     - [ ] Chat id per il messaggio su telegram
 - [ ] Ottimizzare l'esecuzione
 - [ ] Generazione logs
+- [ ] GUI
+- [ ] Spostare le funzioni in file separati per migliorare la leggibilià del codice
 
 
 ___
