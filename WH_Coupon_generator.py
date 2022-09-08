@@ -34,6 +34,10 @@ import config
 telegram_bot_api_key = config.telelgram_bot_api_key
 telegram_chat_id = config.telegram_chat_id
 
+# TODO Aggiungere generazione log per le operazioni
+# TODO Spostare le funzioni in file separati
+# FIXME Migliorare i tempi di esecuzione e attesa
+
 
 def sendMessage(message, type):
     """Invio messaggio a schermo con colore diverso a seconda del tipo di messaggio
@@ -411,6 +415,8 @@ def main():
     except OSError:
         sendMessage(
             "FIle geckodriver.log non esiste, quindi non serve cancellarlo...", "info")
+
+    # TODO Eliminare file log precedenti del programma
 
     sendMessage("Salvataggio immagine coupon --> coupon.png", "info")
 
