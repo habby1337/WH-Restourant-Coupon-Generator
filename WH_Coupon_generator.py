@@ -287,8 +287,10 @@ def sendTelegramMessage(chat_id, pdf_coupon_link):
                       pdf_coupon_link + ")",
                       parse_mode='MarkdownV2')
         sendMessage("Messaggio inviato correttamente", "success")
-    except:
+        logging.info("Messaggio inviato correttamente")
+    except Exception as e:
         sendMessage("Errore nell'invio del messaggio", "error")
+        logging.error("Errore nell'invio del messaggio: " + str(e))
 
 
 def main():
@@ -484,8 +486,15 @@ def main():
         sendMessage(
             "Il file geckodriver.log non esiste, quindi non serve cancellarlo...", "error")
 
+    try:
+        logging.info("Rimozione file \"WH-LOG.log\"")
+        os.remove("WH-LOG.log")
         sendMessage(
-            "FIle geckodriver.log non esiste, quindi non serve cancellarlo...", "info")
+            "Il file WH-LOG.log esisteva, allora è stato cancellato...", "scuccess")
+    except OSError:
+        logging.error("Il file \"WH-LOG.log\" non esiste")
+        sendMessage(
+            "Il file WH-LOG.log non esiste, quindi non serve cancellarlo...", "error")
 
     logging.info("Rimozione file completata")
 
