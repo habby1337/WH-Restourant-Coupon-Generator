@@ -107,12 +107,12 @@ ___
 - [x] Verificare il funzionamento dei proxy prima dell' utilizzo
 - [x] Eliminazione vecchi file coupon e log
 - [x] Time stamp delle operazioni
+- [x] Generazione logs
 - [ ] Migliormaneto attributi inseriti nella comand line 
     - [ ] Valore del browser
     - [ ] Telegram token
     - [ ] Chat id per il messaggio su telegram
 - [ ] Ottimizzare l'esecuzione
-- [ ] Generazione logs
 - [ ] GUI
 - [ ] Spostare le funzioni in file separati per migliorare la leggibilià del codice
 
