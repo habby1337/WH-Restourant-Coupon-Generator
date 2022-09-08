@@ -12,6 +12,7 @@ import telepot
 import socket
 import logging
 
+
 from selenium import webdriver
 # Importa il sistema di tasti da selenium
 from selenium.webdriver.common.keys import Keys
@@ -297,10 +298,12 @@ def main():
     logging.basicConfig(filename='WH-LOG.log', level=logging.INFO, format='%(asctime)s %(message)s',
                         datefmt='%m/%d/%Y %I:%M:%S %p', filemode='w', encoding='utf-8', force=True)
 
+    # GUI.GUI()  # Inizializa la gui
+
     logging.info("Inizio esecuzione script")
     init()  # inizializza colorama per stampare a colori
 
-    logging.index("Inizializzazione browser")
+    logging.info("Inizializzazione browser")
     # Crea l'oggetto browser
     browser = checkParamCL()
 
